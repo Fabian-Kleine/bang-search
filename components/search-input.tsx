@@ -1,12 +1,14 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, getBang } from "@/lib/utils";
 import { Clock4, Search, Sparkles, X } from "lucide-react";
 import { useState, useRef, FocusEvent, KeyboardEvent, useEffect } from "react";
 import { Separator } from "./ui/separator";
 import useSearchHistoryStore from "@/hooks/useSearchHistory";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { Bang, bangs } from "@/bangs";
+import Image from "next/image";
 
 interface SearchInputProps extends Omit<React.HTMLProps<HTMLTextAreaElement>, 'value' | 'onChange'> {
     value: string;
@@ -22,11 +24,35 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
     const containerRef = useRef<HTMLDivElement>(null);
     const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+    const [isBangSearchActive, setIsBangSearchActive] = useState(false);
+    const [bangSearchTerm, setBangSearchTerm] = useState("");
+    const [filteredBangs, setFilteredBangs] = useState<Bang[]>([]);
+
     const handleInput = (event: React.FormEvent<HTMLTextAreaElement>) => {
         const textarea = textareaRef.current;
         if (!textarea) return;
         textarea.style.height = 'auto';
         textarea.style.height = `${textarea.scrollHeight}px`;
+
+        const currentValue = textarea.value;
+        const lastBangIndex = currentValue.lastIndexOf("!");
+
+        if (lastBangIndex !== -1 && lastBangIndex === currentValue.length - 1) {
+            setBangSearchTerm("");
+            setFilteredBangs(bangs);
+            setIsBangSearchActive(true);
+        } else if (lastBangIndex !== -1 && currentValue[lastBangIndex + 1] !== ' ' && lastBangIndex === currentValue.search(/!\S*$/)) {
+            const term = currentValue.substring(lastBangIndex + 1);
+            setBangSearchTerm(term);
+            setFilteredBangs(
+                bangs.filter(b => b.bang.startsWith(`!${term}`))
+            );
+            setIsBangSearchActive(true);
+        } else {
+            setIsBangSearchActive(false);
+            setBangSearchTerm("");
+            setFilteredBangs([]);
+        }
 
         if (props.onInput) {
             props.onInput(event);
@@ -51,6 +77,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
         } as React.ChangeEvent<HTMLTextAreaElement>;
 
         onChange(syntheticEvent);
+        setIsBangSearchActive(false);
 
         setTimeout(() => {
             submitBtnRef.current?.click();
@@ -63,6 +90,9 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
 
     const handleClearSearch = () => {
         onChange({ target: { value: "" }, currentTarget: { value: "" } } as React.ChangeEvent<HTMLTextAreaElement>);
+        setIsBangSearchActive(false);
+        setBangSearchTerm("");
+        setFilteredBangs([]);
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
             textareaRef.current.focus();
@@ -75,6 +105,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
             blurTimeoutRef.current = null;
         }
         setFocused(true);
+        handleInput({ currentTarget: textareaRef.current } as React.FormEvent<HTMLTextAreaElement>);
     };
 
     const handleBlur = (event: FocusEvent<HTMLTextAreaElement>) => {
@@ -84,8 +115,31 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
         blurTimeoutRef.current = setTimeout(() => {
             if (!containerRef.current?.contains(event.relatedTarget as Node)) {
                 setFocused(false);
+                setIsBangSearchActive(false);
             }
         }, 150);
+    };
+
+    const handleBangSelect = (bang: Bang) => {
+        const currentValue = value;
+        const lastBangIndex = currentValue.lastIndexOf("!");
+
+        if (lastBangIndex !== -1) {
+            const newValue = currentValue.substring(0, lastBangIndex) + bang.bang + " ";
+            onChange({ target: { value: newValue }, currentTarget: { value: newValue } } as React.ChangeEvent<HTMLTextAreaElement>);
+
+            setIsBangSearchActive(false);
+            setBangSearchTerm("");
+            setFilteredBangs([]);
+            textareaRef.current?.focus();
+
+            setTimeout(() => {
+                if (textareaRef.current) {
+                    textareaRef.current.style.height = 'auto';
+                    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+                }
+            }, 0);
+        }
     };
 
     useEffect(() => {
@@ -96,12 +150,16 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
         };
     }, []);
 
+    const isHistoryVisible = focused && history.length > 0 && !value && !isBangSearchActive;
+    const isBangSuggestVisible = focused && isBangSearchActive && filteredBangs.length > 0;
+    const isDropdownVisible = isHistoryVisible || isBangSuggestVisible;
+
     return (
         <div
             ref={containerRef}
             className={cn(
                 "relative bg-accent border-input flex min-h-9 w-full min-w-0 rounded-md border px-3 py-1 text-base shadow-xs transition-[color,box-shadow] md:text-sm z-20",
-                focused && history.length > 0 && !value && "rounded-none rounded-t-md border-b-0",
+                isDropdownVisible && "rounded-none rounded-t-md border-b-0",
                 className
             )}>
             <div className="flex w-full items-start">
@@ -112,7 +170,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
                     onChange={onChange}
                     rows={1}
                     className="w-full px-8 py-1 bg-transparent border-none focus:outline-none flex-1 resize-none overflow-y-auto max-h-[220px]"
-                    placeholder="Search the Web..."
+                    placeholder="Search the Web or type ! for bangs..."
                     onInput={handleInput}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
@@ -128,7 +186,8 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
                     </button>
                 )}
             </div>
-            {focused && history.length > 0 && !value && (
+
+            {isHistoryVisible && (
                 <div className="absolute box-content top-full left-0 -ml-[1px] w-full bg-accent border border-t-0 border-input rounded-b-md z-10 flex flex-col justif-center">
                     <div className="px-4 my-1">
                         <Separator decorative />
@@ -174,6 +233,39 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
                     </div>
                 </div>
             )}
+
+            {isBangSuggestVisible && (
+                <div className="absolute box-content top-full left-0 -ml-[1px] w-full bg-accent border border-t-0 border-input rounded-b-md z-10 flex flex-col justif-center max-h-60 overflow-y-auto">
+                    <div className="px-4 my-1">
+                        <Separator decorative />
+                    </div>
+                    <ul>
+                        {filteredBangs.map((bang) => (
+                            <li
+                                key={bang.bang}
+                                onClick={() => handleBangSelect(bang)}
+                                onMouseDown={(e) => e.preventDefault()}
+                                className="group px-3 py-2 flex items-center gap-4 rounded-sm hover:bg-popover cursor-pointer"
+                            >
+                                {bang.img ? (
+                                    <img
+                                        src={bang.img}
+                                        alt={bang.name}
+                                        width={20}
+                                        height={20}
+                                        className="flex-shrink-0"
+                                    />
+                                ) : (
+                                    <Sparkles className="flex-shrink-0 text-muted-foreground" size={16} />
+                                )}
+                                <span className="font-medium">{bang.bang}</span>
+                                <span className="text-muted-foreground truncate flex-1 min-w-0">{bang.name}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
             <button ref={submitBtnRef} className="hidden" type="submit" />
         </div>
     );

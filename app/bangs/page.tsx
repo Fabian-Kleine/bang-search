@@ -49,7 +49,20 @@ export default function BangsPage() {
                     <ul className="mx-4 w-full">
                         {filteredBangs.map((bang) => (
                             <li key={bang.name} className="flex justify-between items-center py-1 px-2 hover:bg-muted rounded-md w-full">
-                                {bang.name}
+                                <div className="flex gap-2 items-center">
+                                    {bang.img ? (
+                                        <img
+                                            src={bang.img}
+                                            alt={bang.name}
+                                            width={20}
+                                            height={20}
+                                            className="flex-shrink-0"
+                                        />
+                                    ) : (
+                                        <Sparkles className="flex-shrink-0 text-muted-foreground" size={16} />
+                                    )}
+                                    {bang.name}
+                                </div>
                                 <code className="relative rounded bg-muted px-[0.3rem] py-[0.1rem] font-mono text-sm">{bang.bang}</code>
                             </li>
                         ))}
