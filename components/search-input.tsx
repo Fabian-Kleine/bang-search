@@ -26,9 +26,11 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
     const submitBtnRef = useRef<HTMLButtonElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const bangSuggestContainerRef = useRef<HTMLDivElement>(null); // Ref for bang suggestion container
 
     const [isBangSearchActive, setIsBangSearchActive] = useState(false);
     const [filteredBangs, setFilteredBangs] = useState<Bang[]>([]);
+    const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
 
     const handleInput = (event: React.FormEvent<HTMLTextAreaElement>) => {
         const textarea = textareaRef.current;
@@ -38,19 +40,28 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
 
         const currentValue = textarea.value;
         const lastBangIndex = currentValue.lastIndexOf("!");
+        let bangSearchBecameActive = false;
+        let bangSearchBecameInactive = false;
 
         if (lastBangIndex !== -1 && lastBangIndex === currentValue.length - 1) {
+            if (!isBangSearchActive) bangSearchBecameActive = true;
             setFilteredBangs(bangs);
             setIsBangSearchActive(true);
         } else if (lastBangIndex !== -1 && currentValue[lastBangIndex + 1] !== ' ' && lastBangIndex === currentValue.search(/!\S*$/)) {
+            if (!isBangSearchActive) bangSearchBecameActive = true;
             const term = currentValue.substring(lastBangIndex + 1);
             setFilteredBangs(
                 bangs.filter(b => b.bang.startsWith(`!${term}`))
             );
             setIsBangSearchActive(true);
         } else {
+            if (isBangSearchActive) bangSearchBecameInactive = true;
             setIsBangSearchActive(false);
             setFilteredBangs([]);
+        }
+
+        if (bangSearchBecameActive || bangSearchBecameInactive || (!value && currentValue) || (value && !currentValue)) {
+            setHighlightedIndex(-1);
         }
 
         if (props.onInput) {
@@ -59,7 +70,35 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
     };
 
     const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-        if (event.key === 'Enter' && !event.shiftKey) {
+        const activeList = isHistoryVisible ? history : (isBangSuggestVisible ? filteredBangs : null);
+        const listLength = activeList?.length ?? 0;
+
+        if (isDropdownVisible && listLength > 0) {
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                setHighlightedIndex(prev => (prev + 1) % listLength);
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                setHighlightedIndex(prev => (prev - 1 + listLength) % listLength);
+            } else if (event.key === 'Enter') {
+                if (highlightedIndex !== -1) {
+                    event.preventDefault();
+                    if (isHistoryVisible) {
+                        handleHistoryClick(history[highlightedIndex]);
+                    } else if (isBangSuggestVisible) {
+                        handleBangSelect(filteredBangs[highlightedIndex]);
+                    }
+                } else if (!event.shiftKey) {
+                    event.preventDefault();
+                    submitBtnRef.current?.click();
+                }
+            } else if (event.key === 'Escape') {
+                event.preventDefault();
+                setFocused(false);
+                setIsBangSearchActive(false);
+                setHighlightedIndex(-1);
+            }
+        } else if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
             submitBtnRef.current?.click();
         }
@@ -77,6 +116,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
 
         onChange(syntheticEvent);
         setIsBangSearchActive(false);
+        setHighlightedIndex(-1);
 
         setTimeout(() => {
             submitBtnRef.current?.click();
@@ -85,12 +125,14 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
 
     const handleHistoryRemove = (index: number) => {
         removeSearch(index);
+        setHighlightedIndex(-1);
     };
 
     const handleClearSearch = () => {
         onChange({ target: { value: "" }, currentTarget: { value: "" } } as React.ChangeEvent<HTMLTextAreaElement>);
         setIsBangSearchActive(false);
         setFilteredBangs([]);
+        setHighlightedIndex(-1);
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
             textareaRef.current.focus();
@@ -103,6 +145,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
             blurTimeoutRef.current = null;
         }
         setFocused(true);
+        setHighlightedIndex(-1);
         handleInput({ currentTarget: textareaRef.current } as React.FormEvent<HTMLTextAreaElement>);
     };
 
@@ -114,6 +157,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
             if (!containerRef.current?.contains(event.relatedTarget as Node)) {
                 setFocused(false);
                 setIsBangSearchActive(false);
+                setHighlightedIndex(-1);
             }
         }, 150);
     };
@@ -128,6 +172,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
 
             setIsBangSearchActive(false);
             setFilteredBangs([]);
+            setHighlightedIndex(-1);
             textareaRef.current?.focus();
 
             setTimeout(() => {
@@ -163,6 +208,20 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
     const isBangSuggestVisible = focused && isBangSearchActive && filteredBangs.length > 0 && value;
     const isDropdownVisible = isHistoryVisible || isBangSuggestVisible;
 
+    useEffect(() => {
+        if (isBangSuggestVisible && highlightedIndex !== -1) {
+            const listElement = bangSuggestContainerRef.current;
+            const highlightedItem = listElement?.querySelector(`#search-item-${highlightedIndex}`);
+
+            if (highlightedItem) {
+                highlightedItem.scrollIntoView({
+                    block: 'nearest',
+                    inline: 'nearest'
+                });
+            }
+        }
+    }, [highlightedIndex, isBangSuggestVisible]);
+
     return (
         <div
             ref={containerRef}
@@ -176,7 +235,13 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
                 <textarea
                     ref={textareaRef}
                     value={value}
-                    onChange={onChange}
+                    onChange={(e) => {
+                        const willBeHistoryVisible = focused && history.length > 0 && !e.target.value && !isBangSearchActive;
+                        if (isHistoryVisible !== willBeHistoryVisible) {
+                            setHighlightedIndex(-1);
+                        }
+                        onChange(e);
+                    }}
                     rows={1}
                     className="w-full px-8 py-1 bg-transparent border-none focus:outline-none flex-1 resize-none overflow-y-auto max-h-[220px]"
                     placeholder="Search the Web or type ! for bangs..."
@@ -184,6 +249,8 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                     onKeyDown={handleKeyDown}
+                    aria-haspopup="listbox"
+                    aria-activedescendant={highlightedIndex !== -1 ? `search-item-${highlightedIndex}` : undefined}
                     {...props}
                 />
                 {value && (
@@ -201,9 +268,20 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
                     <div className="px-4 my-1">
                         <Separator decorative />
                     </div>
-                    <ul>
+                    <ul role="listbox">
                         {history.map((item, index) => (
-                            <li onClick={() => handleHistoryClick(item)} key={index} className="group px-3 py-2 flex items-center gap-4 rounded-sm hover:bg-popover">
+                            <li
+                                id={`search-item-${index}`}
+                                role="option"
+                                aria-selected={highlightedIndex === index}
+                                onClick={() => handleHistoryClick(item)}
+                                onMouseEnter={() => setHighlightedIndex(index)}
+                                key={index}
+                                className={cn(
+                                    "group px-3 py-2 flex items-center gap-4 rounded-sm hover:bg-popover cursor-pointer",
+                                    highlightedIndex === index && "bg-popover"
+                                )}
+                            >
                                 <Clock4 className="flex-shrink-0 text-muted-foreground" size={16} />
                                 <p className="truncate cursor-default flex-1 min-w-0">{item}</p>
                                 <button
@@ -244,17 +322,27 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
             )}
 
             {isBangSuggestVisible && (
-                <div className="absolute box-content top-full left-0 -ml-[1px] w-full bg-accent border border-t-0 border-input rounded-b-md z-10 flex flex-col justif-center max-h-60 overflow-y-auto">
+                <div
+                    ref={bangSuggestContainerRef}
+                    className="absolute box-content top-full left-0 -ml-[1px] w-full bg-accent border border-t-0 border-input rounded-b-md z-10 flex flex-col justif-center max-h-60 overflow-y-auto"
+                >
                     <div className="px-4 my-1">
                         <Separator decorative />
                     </div>
-                    <ul>
-                        {filteredBangs.map((bang) => (
+                    <ul role="listbox">
+                        {filteredBangs.map((bang, index) => (
                             <li
+                                id={`search-item-${index}`}
+                                role="option"
+                                aria-selected={highlightedIndex === index}
                                 key={bang.bang}
                                 onClick={() => handleBangSelect(bang)}
+                                onMouseEnter={() => setHighlightedIndex(index)}
                                 onMouseDown={(e) => e.preventDefault()}
-                                className="group px-3 py-2 flex items-center gap-4 rounded-sm hover:bg-popover cursor-pointer"
+                                className={cn(
+                                    "group px-3 py-2 flex items-center gap-4 rounded-sm hover:bg-popover cursor-pointer",
+                                    highlightedIndex === index && "bg-popover"
+                                )}
                             >
                                 {bang.img ? (
                                     <img
