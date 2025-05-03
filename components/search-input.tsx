@@ -160,7 +160,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
     }, [bangParam]);
 
     const isHistoryVisible = focused && history.length > 0 && !value && !isBangSearchActive;
-    const isBangSuggestVisible = focused && isBangSearchActive && filteredBangs.length > 0;
+    const isBangSuggestVisible = focused && isBangSearchActive && filteredBangs.length > 0 && value;
     const isDropdownVisible = isHistoryVisible || isBangSuggestVisible;
 
     return (
