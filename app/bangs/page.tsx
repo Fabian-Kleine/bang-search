@@ -57,6 +57,7 @@ export default function BangsPage() {
                                             width={20}
                                             height={20}
                                             className="flex-shrink-0"
+                                            loading="lazy"
                                         />
                                     ) : (
                                         <Sparkles className="flex-shrink-0 text-muted-foreground" size={16} />
