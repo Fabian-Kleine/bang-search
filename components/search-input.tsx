@@ -32,6 +32,8 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
     const [filteredBangs, setFilteredBangs] = useState<Bang[]>([]);
     const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
 
+    const [calculation, setCalculation] = useState<number>(NaN);
+
     const handleInput = (event: React.FormEvent<HTMLTextAreaElement>) => {
         const textarea = textareaRef.current;
         if (!textarea) return;
@@ -39,6 +41,22 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
         textarea.style.height = `${textarea.scrollHeight}px`;
 
         const currentValue = textarea.value;
+
+        // determine if calculation is needed
+        if (/^[0-9+\-*/().\s]*$/.test(textarea.value)) {
+            try {
+                const evaluateSearchMath = eval(textarea.value);  
+                if (typeof evaluateSearchMath === 'number' && !isNaN(evaluateSearchMath) && isFinite(evaluateSearchMath)) {
+                    setCalculation(evaluateSearchMath);
+                } else {
+                    setCalculation(NaN);
+                } 
+            } catch (error) {
+                setCalculation(NaN);
+            }
+        }
+
+        // determine if bang search is active
         const lastBangIndex = currentValue.lastIndexOf("!");
         let bangSearchBecameActive = false;
         let bangSearchBecameInactive = false;
@@ -133,6 +151,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
         setIsBangSearchActive(false);
         setFilteredBangs([]);
         setHighlightedIndex(-1);
+        setCalculation(NaN);
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
             textareaRef.current.focus();
@@ -204,9 +223,10 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
         }
     }, [bangParam]);
 
-    const isHistoryVisible = focused && history.length > 0 && !value && !isBangSearchActive;
+    const isHistoryVisible = focused && history.length > 0 && !value && !isBangSearchActive && !calculation;
     const isBangSuggestVisible = focused && isBangSearchActive && filteredBangs.length > 0 && value;
-    const isDropdownVisible = isHistoryVisible || isBangSuggestVisible;
+    const isCalculationVisible = focused && !isBangSearchActive && !isHistoryVisible && !Number.isNaN(calculation) && value && /[+\-*/]/.test(value) && calculation !== 0;
+    const isDropdownVisible = isHistoryVisible || isBangSuggestVisible || isCalculationVisible;
 
     useEffect(() => {
         if (isBangSuggestVisible && highlightedIndex !== -1) {
@@ -361,6 +381,30 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
                             </li>
                         ))}
                     </ul>
+                </div>
+            )}
+
+            {isCalculationVisible && (
+                <div className="absolute box-content top-full left-0 -ml-[1px] w-full bg-accent border border-t-0 border-input rounded-b-md z-10 flex flex-col justif-center">
+                    <div className="px-4 my-1">
+                        <Separator decorative />
+                    </div>
+                    <div className="px-3 py-2 flex flex-col items-end rounded-sm hover:bg-popover cursor-pointer">
+                        <p className="truncate text-muted-foreground cursor-default flex-1 min-w-0">{value.trim().split(" ").join("")}=</p>
+                        <p className="text-lg truncate cursor-default flex-1 min-w-0">{calculation}</p>
+                    </div>
+                    <div className="flex justify-center gap-4 my-2">
+                        <Button type="submit" className="px-8 cursor-pointer">
+                            <Search />
+                            Search
+                        </Button>
+                        <Button className="px-8" asChild>
+                            <Link href={"/bangs"}>
+                                <Sparkles />
+                                Bangs
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
             )}
 
