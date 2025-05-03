@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, getBang } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Clock4, Search, Sparkles, X } from "lucide-react";
 import { useState, useRef, FocusEvent, KeyboardEvent, useEffect } from "react";
 import { Separator } from "./ui/separator";
@@ -8,7 +8,7 @@ import useSearchHistoryStore from "@/hooks/useSearchHistory";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Bang, bangs } from "@/bangs";
-import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
 interface SearchInputProps extends Omit<React.HTMLProps<HTMLTextAreaElement>, 'value' | 'onChange'> {
     value: string;
@@ -18,6 +18,9 @@ interface SearchInputProps extends Omit<React.HTMLProps<HTMLTextAreaElement>, 'v
 export default function SearchInput({ className, value, onChange, ...props }: SearchInputProps) {
     const { history, removeSearch } = useSearchHistoryStore();
 
+    const searchParams = useSearchParams();
+    const bangParam = searchParams.get("b") || null;
+
     const [focused, setFocused] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const submitBtnRef = useRef<HTMLButtonElement>(null);
@@ -25,7 +28,6 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
     const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const [isBangSearchActive, setIsBangSearchActive] = useState(false);
-    const [bangSearchTerm, setBangSearchTerm] = useState("");
     const [filteredBangs, setFilteredBangs] = useState<Bang[]>([]);
 
     const handleInput = (event: React.FormEvent<HTMLTextAreaElement>) => {
@@ -38,19 +40,16 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
         const lastBangIndex = currentValue.lastIndexOf("!");
 
         if (lastBangIndex !== -1 && lastBangIndex === currentValue.length - 1) {
-            setBangSearchTerm("");
             setFilteredBangs(bangs);
             setIsBangSearchActive(true);
         } else if (lastBangIndex !== -1 && currentValue[lastBangIndex + 1] !== ' ' && lastBangIndex === currentValue.search(/!\S*$/)) {
             const term = currentValue.substring(lastBangIndex + 1);
-            setBangSearchTerm(term);
             setFilteredBangs(
                 bangs.filter(b => b.bang.startsWith(`!${term}`))
             );
             setIsBangSearchActive(true);
         } else {
             setIsBangSearchActive(false);
-            setBangSearchTerm("");
             setFilteredBangs([]);
         }
 
@@ -91,7 +90,6 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
     const handleClearSearch = () => {
         onChange({ target: { value: "" }, currentTarget: { value: "" } } as React.ChangeEvent<HTMLTextAreaElement>);
         setIsBangSearchActive(false);
-        setBangSearchTerm("");
         setFilteredBangs([]);
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
@@ -129,7 +127,6 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
             onChange({ target: { value: newValue }, currentTarget: { value: newValue } } as React.ChangeEvent<HTMLTextAreaElement>);
 
             setIsBangSearchActive(false);
-            setBangSearchTerm("");
             setFilteredBangs([]);
             textareaRef.current?.focus();
 
@@ -149,6 +146,18 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
             }
         };
     }, []);
+
+    useEffect(() => {
+        if (bangParam) {
+            const bang = bangs.find(b => b.bang === bangParam);
+            if (bang) {
+                const newValue = `${bang.bang} `;
+                onChange({ target: { value: newValue }, currentTarget: { value: newValue } } as React.ChangeEvent<HTMLTextAreaElement>);
+                setIsBangSearchActive(false);
+                setFilteredBangs([]);
+            }
+        }
+    }, [bangParam, onChange]);
 
     const isHistoryVisible = focused && history.length > 0 && !value && !isBangSearchActive;
     const isBangSuggestVisible = focused && isBangSearchActive && filteredBangs.length > 0;
