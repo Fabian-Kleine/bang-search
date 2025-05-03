@@ -1,10 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Clock4, Search, X } from "lucide-react";
+import { Clock4, Search, Sparkles, X } from "lucide-react";
 import { useState, useRef, FocusEvent, KeyboardEvent, useEffect } from "react";
 import { Separator } from "./ui/separator";
 import useSearchHistoryStore from "@/hooks/useSearchHistory";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 interface SearchInputProps extends Omit<React.HTMLProps<HTMLTextAreaElement>, 'value' | 'onChange'> {
     value: string;
@@ -158,6 +160,18 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
                             </li>
                         ))}
                     </ul>
+                    <div className="flex justify-center gap-4 my-2">
+                        <Button type="submit" className="px-8 cursor-pointer">
+                            <Search />
+                            Search
+                        </Button>
+                        <Button className="px-8" asChild>
+                            <Link href={"/bangs"}>
+                                <Sparkles />
+                                Bangs
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
             )}
             <button ref={submitBtnRef} className="hidden" type="submit" />
