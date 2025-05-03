@@ -2,8 +2,9 @@
 
 import { cn } from "@/lib/utils";
 import { Clock4, Search, X } from "lucide-react";
-import { useState, useRef, FocusEvent } from "react";
+import { useState, useRef, FocusEvent, KeyboardEvent, useEffect } from "react";
 import { Separator } from "./ui/separator";
+import useSearchHistoryStore from "@/hooks/useSearchHistory";
 
 interface SearchInputProps extends Omit<React.HTMLProps<HTMLTextAreaElement>, 'value' | 'onChange'> {
     value: string;
@@ -11,15 +12,33 @@ interface SearchInputProps extends Omit<React.HTMLProps<HTMLTextAreaElement>, 'v
 }
 
 export default function SearchInput({ className, value, onChange, ...props }: SearchInputProps) {
+    const { history, removeSearch } = useSearchHistoryStore();
+
+    const [focused, setFocused] = useState(false);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const submitBtnRef = useRef<HTMLButtonElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
     const handleInput = (event: React.FormEvent<HTMLTextAreaElement>) => {
         const textarea = textareaRef.current;
         if (!textarea) return;
         textarea.style.height = 'auto';
         textarea.style.height = `${textarea.scrollHeight}px`;
 
-        // Call original onInput prop if it exists
         if (props.onInput) {
             props.onInput(event);
+        }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            submitBtnRef.current?.click();
+        }
+
+        if (props.onKeyDown) {
+            props.onKeyDown(event);
         }
     };
 
@@ -34,41 +53,46 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
         setTimeout(() => {
             submitBtnRef.current?.click();
         }, 0);
-    }
+    };
 
     const handleHistoryRemove = (index: number) => {
-        setHistory((prevHistory) => prevHistory.filter((_, i) => i !== index));
-    }
+        removeSearch(index);
+    };
 
     const handleClearSearch = () => {
         onChange({ target: { value: "" }, currentTarget: { value: "" } } as React.ChangeEvent<HTMLTextAreaElement>);
-        // Reset textarea height
         if (textareaRef.current) {
             textareaRef.current.style.height = 'auto';
+            textareaRef.current.focus();
         }
     };
 
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const submitBtnRef = useRef<HTMLButtonElement>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    const [focused, setFocused] = useState(false);
-    const [history, setHistory] = useState<string[]>([
-        "Bears !gi",
-        "Cats !gi",
-        "next.js !gh",
-        "flex !tw",
-        "Elon Musk !x",
-        "A very long search term that should be truncated wado jwadpiojawpdjpwadawkdok",
-    ]); // replace with localSotrage
+    const handleFocus = () => {
+        if (blurTimeoutRef.current) {
+            clearTimeout(blurTimeoutRef.current);
+            blurTimeoutRef.current = null;
+        }
+        setFocused(true);
+    };
 
     const handleBlur = (event: FocusEvent<HTMLTextAreaElement>) => {
-        setTimeout(() => {
+        if (blurTimeoutRef.current) {
+            clearTimeout(blurTimeoutRef.current);
+        }
+        blurTimeoutRef.current = setTimeout(() => {
             if (!containerRef.current?.contains(event.relatedTarget as Node)) {
                 setFocused(false);
             }
         }, 150);
     };
+
+    useEffect(() => {
+        return () => {
+            if (blurTimeoutRef.current) {
+                clearTimeout(blurTimeoutRef.current);
+            }
+        };
+    }, []);
 
     return (
         <div
@@ -88,8 +112,9 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
                     className="w-full px-8 py-1 bg-transparent border-none focus:outline-none flex-1 resize-none overflow-y-auto max-h-[220px]"
                     placeholder="Search the Web..."
                     onInput={handleInput}
-                    onFocus={() => setFocused(true)}
+                    onFocus={handleFocus}
                     onBlur={handleBlur}
+                    onKeyDown={handleKeyDown}
                     {...props}
                 />
                 {value && (

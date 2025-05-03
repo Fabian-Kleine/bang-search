@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import useSearchHistoryStore from "@/hooks/useSearchHistory";
 
 interface SearchFormProps {
     className?: string;
@@ -9,6 +10,8 @@ interface SearchFormProps {
 
 export default function SearchForm({ className, children }: SearchFormProps) {
     const [value, setValue] = useState<string>("");
+
+    const { addSearch } = useSearchHistoryStore();
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setValue(event.target.value);
@@ -20,6 +23,8 @@ export default function SearchForm({ className, children }: SearchFormProps) {
         const query = value;
 
         console.log("Search query:", query);
+
+        addSearch(query);
     };
 
     return (
