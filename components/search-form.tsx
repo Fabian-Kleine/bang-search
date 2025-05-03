@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import useSearchHistoryStore from "@/hooks/useSearchHistory";
+import useSettingsStore from "@/hooks/useSettings";
 
 interface SearchFormProps {
     className?: string;
@@ -13,6 +14,8 @@ export default function SearchForm({ className, children }: SearchFormProps) {
 
     const { addSearch } = useSearchHistoryStore();
 
+    const { searchEngine, openInNewTab } = useSettingsStore();
+
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setValue(event.target.value);
     };
@@ -22,9 +25,15 @@ export default function SearchForm({ className, children }: SearchFormProps) {
 
         const query = value;
 
-        console.log("Search query:", query);
-
         addSearch(query);
+
+        let url = `https://${searchEngine}.com/search?q=${encodeURIComponent(query)}`;
+
+        if (searchEngine === "yahoo") {
+            url = `https://search.yahoo.com/search?p=${encodeURIComponent(query)}`;
+        }
+
+        window.open(url, openInNewTab ? "_blank" : "_self");
     };
 
     return (

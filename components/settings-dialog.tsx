@@ -18,6 +18,8 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
+import { Switch } from "./ui/switch";
+
 import Image from "next/image";
 
 import { useTheme } from "next-themes";
@@ -31,7 +33,12 @@ interface SettingsDialogProps {
 }
 
 export default function SettingsDialog({ children }: SettingsDialogProps) {
-    const { searchEngine, setSearchEngine } = useSettingsStore();
+    const { 
+        searchEngine, 
+        setSearchEngine,
+        openInNewTab,
+        setOpenInNewTab,
+    } = useSettingsStore();
 
     const { theme, setTheme } = useTheme();
 
@@ -97,6 +104,16 @@ export default function SettingsDialog({ children }: SettingsDialogProps) {
                                 </SelectItem>
                             </SelectContent>
                         </Select>
+                    </div>
+                    <div className="w-full h-4" />
+                    <div className="flex flex-wrap sm:flex-nowrap items-center justify-between cursor-default">
+                        <div className="flex flex-col mr-[5%] min-w-[65%] gap-1.5">
+                            <h3>Open in new Tab</h3>
+                            <p className="text-sm text-muted-foreground">
+                                Open the search results in a new tab.
+                            </p>
+                        </div>
+                        <Switch checked={openInNewTab} onCheckedChange={setOpenInNewTab} className="scale-[120%]" />
                     </div>
                 </div>
                 <DialogFooter>
