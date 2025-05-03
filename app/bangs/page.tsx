@@ -31,7 +31,7 @@ export default function BangsPage() {
             </div>
             <div className="flex flex-col items-center justify-center w-full max-w-xl gap-2">
                 <h2 className="mt-10 text-2xl font-bold">{bangs.length} Available Bangs</h2>
-                <p className="mb-4 text-xl">Click on a bang to try it out.</p>
+                <p className="mb-4 text-lg">Click on a bang to try it out.</p>
                 <IconInput icon="Search" className="w-full">
                     <Input
                         type="text"
