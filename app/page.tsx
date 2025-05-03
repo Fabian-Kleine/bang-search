@@ -8,7 +8,8 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6">
+    <main className="flex-1 flex flex-col items-center justify-start px-4 sm:px-6">
+      <div className="h-0 sm:h-48" />
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight">💥 Bang Search</h1>
