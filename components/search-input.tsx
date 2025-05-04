@@ -9,10 +9,12 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { Bang, bangs } from "@/bangs";
 import { useSearchParams } from "next/navigation";
+import { evaluate } from 'mathjs';
 
 interface SearchInputProps extends Omit<React.HTMLProps<HTMLTextAreaElement>, 'value' | 'onChange'> {
     value: string;
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    autoFocus?: boolean;
 }
 
 export default function SearchInput({ className, value, onChange, ...props }: SearchInputProps) {
@@ -26,13 +28,15 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
     const submitBtnRef = useRef<HTMLButtonElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const bangSuggestContainerRef = useRef<HTMLDivElement>(null); // Ref for bang suggestion container
+    const bangSuggestContainerRef = useRef<HTMLDivElement>(null);
 
     const [isBangSearchActive, setIsBangSearchActive] = useState(false);
     const [filteredBangs, setFilteredBangs] = useState<Bang[]>([]);
     const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
 
-    const [calculation, setCalculation] = useState<number>(NaN);
+    const [isCalculation, setIsCalculation] = useState(false);
+    const [calculation, setCalculation] = useState<number | string>(NaN);
+    const [calculationFormula, setCalculationFormula] = useState<string>("");
 
     const handleInput = (event: React.FormEvent<HTMLTextAreaElement>) => {
         const textarea = textareaRef.current;
@@ -42,21 +46,22 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
 
         const currentValue = textarea.value;
 
-        // determine if calculation is needed
-        if (/^[0-9+\-*/().\s]*$/.test(textarea.value)) {
+        if (currentValue.startsWith("=") && currentValue.length > 1) {
+            const expression = currentValue.slice(1).trim();
             try {
-                const evaluateSearchMath = eval(textarea.value);  
-                if (typeof evaluateSearchMath === 'number' && !isNaN(evaluateSearchMath) && isFinite(evaluateSearchMath)) {
-                    setCalculation(evaluateSearchMath);
-                } else {
-                    setCalculation(NaN);
-                } 
+                const result = evaluate(expression);
+                setCalculation(result);
             } catch (error) {
-                setCalculation(NaN);
+                setCalculation("Syntax Error");
             }
+            setIsCalculation(true);
+            setCalculationFormula(expression.replace("=", "").split(" ").join(""));
+        } else {
+            setIsCalculation(false);
+            setCalculation(NaN);
+            setCalculationFormula("");
         }
 
-        // determine if bang search is active
         const lastBangIndex = currentValue.lastIndexOf("!");
         let bangSearchBecameActive = false;
         let bangSearchBecameInactive = false;
@@ -152,8 +157,14 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
         setFilteredBangs([]);
         setHighlightedIndex(-1);
         setCalculation(NaN);
+        setIsCalculation(false);
+        setCalculationFormula("");
         if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto';
+            setTimeout(() => {
+                if (textareaRef.current) {
+                    textareaRef.current.style.height = 'auto';
+                }
+            }, 50);
             textareaRef.current.focus();
         }
     };
@@ -165,7 +176,9 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
         }
         setFocused(true);
         setHighlightedIndex(-1);
-        handleInput({ currentTarget: textareaRef.current } as React.FormEvent<HTMLTextAreaElement>);
+        if (textareaRef.current) {
+            handleInput({ currentTarget: textareaRef.current } as React.FormEvent<HTMLTextAreaElement>);
+        }
     };
 
     const handleBlur = (event: FocusEvent<HTMLTextAreaElement>) => {
@@ -204,6 +217,12 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
     };
 
     useEffect(() => {
+        if (props.autoFocus && textareaRef.current) {
+            handleFocus();
+        }
+    }, []);
+
+    useEffect(() => {
         return () => {
             if (blurTimeoutRef.current) {
                 clearTimeout(blurTimeoutRef.current);
@@ -223,9 +242,9 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
         }
     }, [bangParam]);
 
-    const isHistoryVisible = focused && history.length > 0 && !value && !isBangSearchActive && !calculation;
+    const isHistoryVisible = focused && history.length > 0 && !value && !isBangSearchActive && !isCalculation;
     const isBangSuggestVisible = focused && isBangSearchActive && filteredBangs.length > 0 && value;
-    const isCalculationVisible = focused && !isBangSearchActive && !isHistoryVisible && !Number.isNaN(calculation) && value && /[+\-*/]/.test(value) && calculation !== 0;
+    const isCalculationVisible = focused && !isBangSearchActive && !isHistoryVisible && isCalculation && value.startsWith("=");
     const isDropdownVisible = isHistoryVisible || isBangSuggestVisible || isCalculationVisible;
 
     useEffect(() => {
@@ -389,9 +408,9 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
                     <div className="px-4 my-1">
                         <Separator decorative />
                     </div>
-                    <div className="px-3 py-2 flex flex-col items-end rounded-sm hover:bg-popover cursor-pointer">
-                        <p className="truncate text-muted-foreground cursor-default flex-1 min-w-0">{value.trim().split(" ").join("")}=</p>
-                        <p className="text-lg truncate cursor-default flex-1 min-w-0">{calculation}</p>
+                    <div className="px-3 py-2 flex flex-col items-end rounded-sm">
+                        <p className="truncate text-muted-foreground cursor-default flex-1 min-w-0">{calculationFormula}=</p>
+                        <p className="text-lg truncate cursor-default flex-1 min-w-0">{String(calculation)}</p>
                     </div>
                     <div className="flex justify-center gap-4 my-2">
                         <Button type="submit" className="px-8 cursor-pointer">
