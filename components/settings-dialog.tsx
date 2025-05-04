@@ -6,8 +6,6 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    DialogFooter,
-    DialogClose,
 } from "@/components/ui/dialog"
 
 import {
@@ -25,8 +23,6 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 
 import useSettingsStore from "@/hooks/useSettings";
-
-import { Button } from "@/components/ui/button"
 
 interface SettingsDialogProps {
     children: React.ReactNode;
@@ -116,11 +112,6 @@ export default function SettingsDialog({ children }: SettingsDialogProps) {
                         <Switch checked={openInNewTab} onCheckedChange={setOpenInNewTab} className="scale-[120%]" />
                     </div>
                 </div>
-                <DialogFooter>
-                    <DialogClose asChild>
-                        <Button variant="secondary" className="cursor-pointer">Close</Button>
-                    </DialogClose>
-                </DialogFooter>
             </DialogContent>
         </Dialog>
     )
