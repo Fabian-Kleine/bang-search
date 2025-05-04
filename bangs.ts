@@ -34,7 +34,7 @@ export const bangs: Bang[] = [
         name: "Wikipedia",
         bang: "!w",
         url: "https://en.wikipedia.org/w/index.php?search={{query}}",
-        img: "https://cdn.simpleicons.org/wikipedia/wikipedia",
+        img: "https://cdn.simpleicons.org/wikipedia/{{theme}}",
     },
     {
         name: "YouTube",
@@ -58,7 +58,7 @@ export const bangs: Bang[] = [
         name: "eBay",
         bang: "!ebay",
         url: "https://www.ebay.com/sch/i.html?_nkw={{query}}",
-        img: "https://static.cdnlogo.com/logos/e/33/ebay.svg"
+        img: "/logos/ebay.png",
     },
     {
         name: "Reddit",
@@ -70,7 +70,7 @@ export const bangs: Bang[] = [
         name: "X",
         bang: "!x",
         url: "https://x.com/search?q={{query}}",
-        img: "https://cdn.simpleicons.org/x/x",
+        img: "https://cdn.simpleicons.org/x/{{theme}}",
     },
     {
         name: "Instagram",
@@ -88,7 +88,7 @@ export const bangs: Bang[] = [
         name: "Threads",
         bang: "!th",
         url: "https://www.threads.com/search?q={{query}}",
-        img: "https://cdn.simpleicons.org/threads/threads"
+        img: "https://cdn.simpleicons.org/threads/{{theme}}",
     },
     {
         name: "TikTok",
@@ -112,7 +112,7 @@ export const bangs: Bang[] = [
         name: "GitHub",
         bang: "!gh",
         url: "https://github.com/search?q={{query}}",
-        img: "https://cdn.simpleicons.org/github/ffffff",
+        img: "https://cdn.simpleicons.org/github/{{theme}}",
     },
     {
         name: "Stack Overflow",
@@ -160,7 +160,7 @@ export const bangs: Bang[] = [
         name: "Unsplash",
         bang: "!uns",
         url: "https://unsplash.com/s/photos/{{query}}",
-        img: "https://cdn.simpleicons.org/unsplash/unsplash",
+        img: "https://cdn.simpleicons.org/unsplash/{{theme}}",
     },
     {
         name: "Adobe Stock",
@@ -220,7 +220,7 @@ export const bangs: Bang[] = [
         name: "Simple Icons",
         bang: "!si",
         url: "https://simpleicons.org/?q={{query}}",
-        img: "https://cdn.simpleicons.org/simpleicons/simpleicons",
+        img: "https://cdn.simpleicons.org/simpleicons/{{theme}}",
     },
     {
         name: "Booking.com",
@@ -244,7 +244,7 @@ export const bangs: Bang[] = [
         name: "ChatGPT",
         bang: "!gpt",
         url: "https://chatgpt.com/?q={{query}}",
-        img: "https://cdn.simpleicons.org/openai/openai",
+        img: "https://cdn.simpleicons.org/openai/{{theme}}",
     },
     {
         name: "Claude AI",

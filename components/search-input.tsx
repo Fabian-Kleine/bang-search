@@ -10,6 +10,7 @@ import Link from "next/link";
 import { Bang, bangs } from "@/bangs";
 import { useSearchParams } from "next/navigation";
 import { evaluate } from 'mathjs';
+import ThemeImage from "./ui/theme-image";
 
 interface SearchInputProps extends Omit<React.HTMLProps<HTMLTextAreaElement>, 'value' | 'onChange'> {
     value: string;
@@ -384,7 +385,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
                                 )}
                             >
                                 {bang.img ? (
-                                    <img
+                                    <ThemeImage
                                         src={bang.img}
                                         alt={bang.name}
                                         width={20}

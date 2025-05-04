@@ -6,6 +6,7 @@ import IconInput from "@/components/ui/icon-input";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import Link from "next/link";
+import ThemeImage from "@/components/ui/theme-image";
 
 export default function BangsPage() {
     const [filteredBangs, setFilteredBangs] = useState(bangs);
@@ -51,7 +52,7 @@ export default function BangsPage() {
                                 <Link href={`/?b=${bang.bang}`} className="flex justify-between items-center py-1 px-2 hover:bg-muted rounded-md w-full">
                                     <div className="flex gap-2 items-center">
                                         {bang.img ? (
-                                            <img
+                                            <ThemeImage
                                                 src={bang.img}
                                                 alt={bang.name}
                                                 width={20}
