@@ -233,5 +233,29 @@ export const bangs: Bang[] = [
         bang: "!abnb",
         url: "https://www.airbnb.com/s/{{query}}",
         img: "https://cdn.simpleicons.org/airbnb/airbnb",
+    },
+    {
+        name: "Wayback Machine",
+        bang: "!wbm",
+        url: "https://web.archive.org/web/*/{{query}}",
+        img: "https://static.cdnlogo.com/logos/w/66/wayback-machine.svg",
+    },
+    {
+        name: "ChatGPT",
+        bang: "!gpt",
+        url: "https://chatgpt.com/?q={{query}}",
+        img: "https://cdn.simpleicons.org/openai/openai",
+    },
+    {
+        name: "Claude AI",
+        bang: "!claude",
+        url: "https://claude.ai/new?q={{query}}",
+        img: "https://cdn.simpleicons.org/claude/claude",
+    },
+    {
+        name: "Copilot",
+        bang: "!cop",
+        url: "https://copilot.microsoft.com/?q={{query}}",
+        img: "https://static.cdnlogo.com/logos/c/99/copilot.svg"
     }
 ];
