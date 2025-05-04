@@ -14,13 +14,13 @@ export default function Header() {
     const isSearchPage = pathname === "/" || pathname === "/search";
 
     return (
-        <header className="@container flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-            <Link href="/" className="flex items-center space-x-2">
+        <header className="@container flex items-center justify-between gap-2 h-16 px-4 sm:px-6 lg:px-8">
+            <Link href="/" className="hidden md:flex items-center space-x-2">
                 <span className="text-2xl">💥</span>
                 <span className="text-xl font-bold">Bang Search</span>
             </Link>
             {!isSearchPage && (
-                <SearchForm className="absolute left-1/2 -translate-x-1/2 w-full max-w-md">
+                <SearchForm className="md:absolute md:left-1/2 md:-translate-x-1/2 w-full max-w-md">
                     {(value, onChange) => (
                         <SearchInput
                             value={value}
