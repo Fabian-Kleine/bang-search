@@ -4,7 +4,7 @@ import { Sparkles } from "lucide-react";
 import { bangs } from "@/lib/bangs";
 import IconInput from "@/components/ui/icon-input";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import ThemeImage from "@/components/ui/theme-image";
 import { RetroGrid } from "@/components/magicui/retro-grid";
@@ -13,6 +13,7 @@ import { useTheme } from "next-themes";
 export default function BangsPage() {
     const [filteredBangs, setFilteredBangs] = useState(bangs);
     const [searchValue, setSearchValue] = useState("");
+    const [mounted, setMounted] = useState(false);
     const { resolvedTheme } = useTheme();
 
     const handleFilterBangs = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,6 +21,14 @@ export default function BangsPage() {
         const filtered = bangs.filter((bang) => bang.name.toLowerCase().includes(value) || bang.bang.toLowerCase().includes(value));
         setFilteredBangs(filtered);
         setSearchValue(value);
+    }
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return null;
     }
 
     return (
@@ -31,11 +40,7 @@ export default function BangsPage() {
                 <RetroGrid />
             </div>
             <div className="flex flex-wrap md:flex-nowrap justify-center items-center gap-8 my-16">
-                {resolvedTheme === "dark" ? (
-                    <img src="/bangs.png" alt="Bangs" width={400} />
-                ) : (
-                    <img src="/bangs_light.png" alt="Bangs" width={400} />
-                )}
+                <img src={resolvedTheme === "dark" ? "/bangs.png" : "/bangs_light.png"} alt="Bangs" width={400} />
                 <div className="flex flex-col max-w-2xl mt-10 px-4 sm:px-6">
                     <p className="mb-4">
                         Bangs are shortcuts that quickly take you to search results on other sites. For example, when you know you want to search on another site like Wikipedia or Amazon, our bangs get you there fastest. A search for <code className="relative rounded bg-muted px-[0.3rem] py-[0.1rem] font-mono text-sm mx-1 -z-10">!w filter bubble</code> will take you directly to Wikipedia.
