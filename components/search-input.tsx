@@ -364,12 +364,12 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
             {isBangSuggestVisible && (
                 <div
                     ref={bangSuggestContainerRef}
-                    className="absolute box-content top-full left-0 -ml-[1px] w-full bg-accent border border-t-0 border-input rounded-b-md z-10 flex flex-col justif-center max-h-60 overflow-y-auto"
+                    className="absolute box-content top-full left-0 -ml-[1px] w-full bg-accent border border-t-0 border-input rounded-b-md z-10 flex flex-col justif-center overflow-hidden"
                 >
                     <div className="px-4 my-1">
                         <Separator decorative />
                     </div>
-                    <ul role="listbox">
+                    <ul role="listbox" className="max-h-60 overflow-y-auto">
                         {filteredBangs.map((bang, index) => (
                             <li
                                 id={`search-item-${index}`}
@@ -401,6 +401,8 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
                             </li>
                         ))}
                     </ul>
+                    <Separator decorative className="my-1" />
+                    <p className="text-muted-foreground mx-2 mb-1">Shortcuts to search on other sites <Link className="text-sky-600 font-bold hover:underline" href={"/bangs"}>Learn More</Link></p>
                 </div>
             )}
 
