@@ -398,7 +398,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
                                         loading="lazy"
                                     />
                                 ) : (
-                                    <Sparkles className="flex-shrink-0 text-muted-foreground" size={16} />
+                                    <Sparkles className="flex-shrink-0 text-muted-foreground mr-0.5" size={18} />
                                 )}
                                 <span className="font-medium">{bang.bang}</span>
                                 <span className="text-muted-foreground truncate flex-1 min-w-0">{bang.name}</span>
