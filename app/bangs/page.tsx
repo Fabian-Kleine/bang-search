@@ -7,10 +7,13 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import Link from "next/link";
 import ThemeImage from "@/components/ui/theme-image";
+import { RetroGrid } from "@/components/magicui/retro-grid";
+import { useTheme } from "next-themes";
 
 export default function BangsPage() {
     const [filteredBangs, setFilteredBangs] = useState(bangs);
     const [searchValue, setSearchValue] = useState("");
+    const { resolvedTheme } = useTheme();
 
     const handleFilterBangs = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.toLowerCase();
@@ -20,15 +23,27 @@ export default function BangsPage() {
     }
 
     return (
-        <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6">
-            <h1 className="tracking-tighter text-3xl sm:text-4xl md:text-5xl lg:text-6xl/none font-bold">!Bangs</h1>
-            <div className="flex flex-col max-w-2xl mt-10">
-                <p className="mb-4">
-                    Bangs are shortcuts that quickly take you to search results on other sites. For example, when you know you want to search on another site like Wikipedia or Amazon, our bangs get you there fastest. A search for <code className="relative rounded bg-muted px-[0.3rem] py-[0.1rem] font-mono text-sm mx-1 -z-10">!w filter bubble</code> will take you directly to Wikipedia.
-                </p>
-                <p>
-                    Remember, though, because your search is actually taking place on that other site, you are subject to that site’s policies, including its data collection practices.
-                </p>
+        <main className="flex-1 flex flex-col items-center justify-center">
+            <div className="relative min-h-[50vh] w-full flex flex-col items-center justify-center px-4 sm:px-6">
+                <h1 className="pointer-events-none select-none tracking-tighter text-5xl sm:text-6xl md:text-7xl lg:text-8xl/none font-bold z-10 bg-linear-to-b from-[#ffd319] via-[#ff2975] to-[#8c1eff] bg-clip-text text-transparent h-full w-full text-center pl-[0.2rem] pr-[0.2rem] -ml-[0.2rem] pb-[1rem] -mb-[1rem]">
+                    !Bangs
+                </h1>
+                <RetroGrid />
+            </div>
+            <div className="flex gap-8 my-16">
+                {resolvedTheme === "dark" ? (
+                    <img src="/bangs.png" alt="Bangs" width={400} />
+                ) : (
+                    <img src="/bangs_light.png" alt="Bangs" width={400} />
+                )}
+                <div className="flex flex-col max-w-2xl mt-10 px-4 sm:px-6">
+                    <p className="mb-4">
+                        Bangs are shortcuts that quickly take you to search results on other sites. For example, when you know you want to search on another site like Wikipedia or Amazon, our bangs get you there fastest. A search for <code className="relative rounded bg-muted px-[0.3rem] py-[0.1rem] font-mono text-sm mx-1 -z-10">!w filter bubble</code> will take you directly to Wikipedia.
+                    </p>
+                    <p>
+                        Remember, though, because your search is actually taking place on that other site, you are subject to that site’s policies, including its data collection practices.
+                    </p>
+                </div>
             </div>
             <div className="flex flex-col items-center justify-center w-full max-w-xl gap-2">
                 <h2 className="mt-10 text-2xl font-bold">{bangs.length} Available Bangs</h2>
