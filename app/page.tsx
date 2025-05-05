@@ -14,11 +14,15 @@ export default function Home() {
         <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight">💥 Bang Search</h1>
           <p className="mt-4 text-sm text-muted-foreground">
-            You can use Bangs like
+            Use
             <code className="relative rounded bg-muted px-[0.3rem] py-[0.1rem] font-mono text-sm mx-1">
-              !gh
+              !
             </code>
-            to search different sites directly.
+            for bangs or
+            <code className="relative rounded bg-muted px-[0.3rem] py-[0.1rem] font-mono text-sm mx-1">
+              =
+            </code>
+            for calculations.
           </p>
         </div>
         <SearchForm className="mt-8 space-y-4">
