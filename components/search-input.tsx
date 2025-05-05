@@ -7,7 +7,7 @@ import { Separator } from "./ui/separator";
 import useSearchHistoryStore from "@/hooks/useSearchHistory";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { Bang, bangs } from "@/bangs";
+import { Bang, bangs } from "@/lib/bangs";
 import { useSearchParams } from "next/navigation";
 import { evaluate } from 'mathjs';
 import ThemeImage from "./ui/theme-image";

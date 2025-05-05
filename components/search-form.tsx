@@ -3,7 +3,7 @@
 import { useState } from "react";
 import useSearchHistoryStore from "@/hooks/useSearchHistory";
 import useSettingsStore from "@/hooks/useSettings";
-import { getBangUrl } from "@/lib/utils";
+import { getBangUrl } from "@/lib/bangs";
 
 interface SearchFormProps {
     className?: string;

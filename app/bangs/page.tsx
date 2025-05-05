@@ -1,7 +1,7 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import { bangs } from "@/bangs";
+import { bangs } from "@/lib/bangs";
 import IconInput from "@/components/ui/icon-input";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
