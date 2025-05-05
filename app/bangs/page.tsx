@@ -33,7 +33,7 @@ export default function BangsPage() {
 
     return (
         <main className="flex-1 flex flex-col items-center justify-center">
-            <div className="relative min-h-[50vh] w-full flex flex-col items-center justify-center px-4 sm:px-6">
+            <div className="relative min-h-[50vh] w-full flex flex-col items-center justify-center px-4 sm:px-6 -z-10">
                 <h1 className="pointer-events-none select-none tracking-tighter text-5xl sm:text-6xl md:text-7xl lg:text-8xl/none font-bold z-10 bg-linear-to-b from-[#ffd319] via-[#ff2975] to-[#8c1eff] bg-clip-text text-transparent h-full w-full text-center pl-[0.2rem] pr-[0.2rem] -ml-[0.2rem] pb-[1rem] -mb-[1rem]">
                     !Bangs
                 </h1>
