@@ -37,10 +37,28 @@ export const bangs: Bang[] = [
         img: "https://cdn.simpleicons.org/wikipedia/{{theme}}",
     },
     {
+        name: "Wikipedia (DE)",
+        bang: "!wde",
+        url: "https://de.wikipedia.org/w/index.php?search={{query}}",
+        img: "https://cdn.simpleicons.org/wikipedia/{{theme}}",
+    },
+    {
+        name: "Wiki Fandom",
+        bang: "!wf",
+        url: "https://community.fandom.com/wiki/Special:Search?query={{query}}&scope=cross-wiki",
+        img: "https://cdn.simpleicons.org/fandom/fandom",
+    },
+    {
         name: "YouTube",
         bang: "!yt",
         url: "https://www.youtube.com/results?search_query={{query}}",
         img: "https://cdn.simpleicons.org/youtube/youtube",
+    },
+    {
+        name: "Twitch",
+        bang: "!tw",
+        url: "https://www.twitch.tv/search?term={{query}}",
+        img: "https://cdn.simpleicons.org/twitch/twitch",
     },
     {
         name: "Amazon",
@@ -64,7 +82,7 @@ export const bangs: Bang[] = [
         name: "Reddit",
         bang: "!r",
         url: "https://www.reddit.com/search?q={{query}}",
-        img: "https://cdn.simpleicons.org/reddit/reddit",
+        img: "https://static.cdnlogo.com/logos/r/93/reddit.svg",
     },
     {
         name: "X",
@@ -76,7 +94,7 @@ export const bangs: Bang[] = [
         name: "Instagram",
         bang: "!ig",
         url: "https://www.instagram.com/explore/tags/{{query}}/",
-        img: "https://static.cdnlogo.com/logos/i/4/instagram.svg"
+        img: "https://static.cdnlogo.com/logos/i/28/instagram.png"
     },
     {
         name: "Facebook",
@@ -193,16 +211,28 @@ export const bangs: Bang[] = [
         img: "https://static.cdnlogo.com/logos/s/83/steam-icon.svg",
     },
     {
+        name: "Epic Games",
+        bang: "!epic",
+        url: "https://store.epicgames.com/browse?q={{query}}",
+        img: "https://cdn.simpleicons.org/epicgames/{{theme}}",
+    },
+    {
         name: "Google Translate",
         bang: "!gt",
         url: "https://translate.google.com/?sl=auto&tl=en&text={{query}}",
         img: "https://static.cdnlogo.com/logos/g/31/google-translate.svg",
     },
     {
+        name: "DeepL",
+        bang: "!dpl",
+        url: "https://www.deepl.com/translator#en/{{query}}",
+        img: "https://cdn.simpleicons.org/deepl/deepl",
+    },
+    {
         name: "Netflix",
         bang: "!nf",
         url: "https://www.netflix.com/search?q={{query}}",
-        img: "https:cdn.simpleicons.org/netflix/netflix",
+        img: "https://cdn.simpleicons.org/netflix/netflix",
     },
     {
         name: "Amazon Prime Video",
@@ -257,6 +287,60 @@ export const bangs: Bang[] = [
         bang: "!cop",
         url: "https://copilot.microsoft.com/?q={{query}}",
         img: "https://static.cdnlogo.com/logos/c/99/copilot.svg"
+    },
+    {
+        name: "Mozilla Developer Network",
+        bang: "!mdn",
+        url: "https://developer.mozilla.org/search?q={{query}}",
+        img: "https://cdn.simpleicons.org/mdnwebdocs/{{theme}}",
+    },
+    {
+        name: "icons8",
+        bang: "!i8",
+        url: "https://icons8.com/icons/set/{{query}}",
+        img: "https://cdn.simpleicons.org/icons8/icons8",
+    },
+    {
+        name: "Lucide Icons",
+        bang: "!lucide",
+        url: "https://lucide.dev/icons/?search={{query}}",
+        img: "https://cdn.simpleicons.org/lucide/lucide",
+    },
+    {
+        name: "Font Awesome",
+        bang: "!fa",
+        url: "https://fontawesome.com/search?q={{query}}",
+        img: "https://cdn.simpleicons.org/fontawesome/fontawesome",
+    },
+    {
+        name: "Google Material Icons",
+        bang: "!mi",
+        url: "https://fonts.google.com/icons?icon.query={{query}}",
+        img: "https://static.cdnlogo.com/logos/g/18/google-fonts-2021.svg",
+    },
+    {
+        name: "Google Fonts",
+        bang: "!gf",
+        url: "https://fonts.google.com/?query={{query}}",
+        img: "https://static.cdnlogo.com/logos/g/18/google-fonts-2021.svg",
+    },
+    {
+        name: "Bootstrap Icons",
+        bang: "!bsi",
+        url: "https://icons.getbootstrap.com/?q={{query}}",
+        img: "https://cdn.simpleicons.org/bootstrap/bootstrap",
+    },
+    {
+        name: "npm",
+        bang: "!npm",
+        url: "https://www.npmjs.com/search?q={{query}}",
+        img: "https://cdn.simpleicons.org/npm/npm",
+    },
+    {
+        name: "PyPI",
+        bang: "!pypi",
+        url: "https://pypi.org/search/?q={{query}}",
+        img: "https://cdn.simpleicons.org/pypi/pypi",
     }
 ];
 
