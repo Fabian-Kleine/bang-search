@@ -3,6 +3,7 @@ export interface Bang {
     bang: string;
     url: string;
     img?: string;
+    disabled?: boolean;
 }
 
 export const bangs: Bang[] = [
@@ -344,11 +345,12 @@ export const bangs: Bang[] = [
     }
 ];
 
-export function getBang(query: string): { bang: Bang | null; searchTerm: string } {
+export function getBang(query: string, customBangs: Bang[]): { bang: Bang | null; searchTerm: string } {
+    const allBangs = [...bangs, ...customBangs];
     let searchTerm = query;
     let foundBang: Bang | null = null;
 
-    for (const bangObj of bangs) {
+    for (const bangObj of allBangs) {
         const bangPattern = bangObj.bang;
         let bangIndex = -1;
         let isExactMatch = false;
@@ -395,8 +397,8 @@ export function getBang(query: string): { bang: Bang | null; searchTerm: string 
     return { bang: foundBang, searchTerm };
 }
 
-export function getBangUrl(query: string): string | null {
-    const { bang, searchTerm } = getBang(query);
+export function getBangUrl(query: string, customBangs: Bang[]): string | null {
+    const { bang, searchTerm } = getBang(query, customBangs);
 
     if (!bang) {
         return null;

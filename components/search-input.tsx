@@ -7,10 +7,11 @@ import { Separator } from "./ui/separator";
 import useSearchHistoryStore from "@/hooks/useSearchHistory";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { Bang, bangs } from "@/lib/bangs";
+import { Bang, bangs as staticBangs } from "@/lib/bangs";
 import { useSearchParams } from "next/navigation";
 import { evaluate } from 'mathjs';
 import ThemeImage from "./ui/theme-image";
+import useCustomBangsStore from "@/hooks/useCustomBangs";
 
 interface SearchInputProps extends Omit<React.HTMLProps<HTMLTextAreaElement>, 'value' | 'onChange'> {
     value: string;
@@ -20,6 +21,9 @@ interface SearchInputProps extends Omit<React.HTMLProps<HTMLTextAreaElement>, 'v
 
 export default function SearchInput({ className, value, onChange, ...props }: SearchInputProps) {
     const { history, removeSearch } = useSearchHistoryStore();
+    const { bangs: customBangs } = useCustomBangsStore();
+
+    const bangs = [...staticBangs, ...customBangs].filter(b => !b.disabled);
 
     const searchParams = useSearchParams();
     const bangParam = searchParams.get("b") || null;
