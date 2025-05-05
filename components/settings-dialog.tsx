@@ -156,11 +156,11 @@ export default function SettingsDialog({ children }: SettingsDialogProps) {
                 </DialogHeader>
                 <Tabs defaultValue="settings" className="flex flex-col sm:flex-row gap-6">
                     <TabsList className="flex flex-row mx-auto sm:mx-0 sm:flex-col sm:gap-2 sm:h-auto sm:w-2xs overflow-x-auto sm:overflow-x-visible bg-transparent sm:bg-muted p-1 sm:py-4 sm:justify-start rounded-none">
-                        <TabsTrigger value="settings" className="w-full justify-start sm:max-h-fit sm:hover:bg-background sm:dark:hover:bg-input/30 sm:data-[state=active]:border-none sm:py-1 sm:px-4 cursor-pointer sm:rounded-sm sm:dark:shadow-none">
+                        <TabsTrigger value="settings" className="w-full justify-start sm:max-h-fit sm:hover:bg-background sm:dark:hover:bg-input/30 sm:py-1 sm:px-4 cursor-pointer sm:rounded-sm sm:dark:shadow-none sm:!border-none">
                             <Settings2 />
                             Settings
                         </TabsTrigger>
-                        <TabsTrigger value="bangs" className="w-full justify-start sm:max-h-fit sm:hover:bg-background sm:dark:hover:bg-input/30 sm:data-[state=active]:border-none sm:py-1 sm:px-4 cursor-pointer sm:rounded-sm sm:dark:shadow-none">
+                        <TabsTrigger value="bangs" className="w-full justify-start sm:max-h-fit sm:hover:bg-background sm:dark:hover:bg-input/30 sm:py-1 sm:px-4 cursor-pointer sm:rounded-sm sm:dark:shadow-none sm:!border-none">
                             <Sparkles />
                             Bangs
                         </TabsTrigger>
