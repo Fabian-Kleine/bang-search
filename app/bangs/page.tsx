@@ -30,7 +30,7 @@ export default function BangsPage() {
                 </h1>
                 <RetroGrid />
             </div>
-            <div className="flex gap-8 my-16">
+            <div className="flex flex-wrap md:flex-nowrap justify-center items-center gap-8 my-16">
                 {resolvedTheme === "dark" ? (
                     <img src="/bangs.png" alt="Bangs" width={400} />
                 ) : (
