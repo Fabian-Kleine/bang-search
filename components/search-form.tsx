@@ -31,12 +31,19 @@ export default function SearchForm({ className, children }: SearchFormProps) {
 
         let url: string | null = null;
 
-        url = getBangUrl(originalQuery, customBangs);
+        // Check if the value is a URL
+        try {
+            const parsedUrl = new URL(originalQuery);
+            url = parsedUrl.href;
+        } catch {
+            // Not a valid URL, proceed with search logic
+            url = getBangUrl(originalQuery, customBangs);
 
-        if (!url) {
-            url = `https://${searchEngine}.com/search?q=${encodeURIComponent(originalQuery)}`;
-            if (searchEngine === "yahoo") {
-                url = `https://search.yahoo.com/search?p=${encodeURIComponent(originalQuery)}`;
+            if (!url) {
+                url = `https://${searchEngine}.com/search?q=${encodeURIComponent(originalQuery)}`;
+                if (searchEngine === "yahoo") {
+                    url = `https://search.yahoo.com/search?p=${encodeURIComponent(originalQuery)}`;
+                }
             }
         }
 
