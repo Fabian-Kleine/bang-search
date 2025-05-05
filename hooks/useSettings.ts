@@ -6,6 +6,8 @@ interface SettingsState {
     setSearchEngine: (engine: string) => void;
     openInNewTab: boolean;
     setOpenInNewTab: (newTab: boolean) => void;
+    searchHistoryActive: boolean;
+    setSearchHistoryActive: (active: boolean) => void;
 }
 
 const useSettingsStore = create<SettingsState>()(
@@ -13,8 +15,10 @@ const useSettingsStore = create<SettingsState>()(
         (set) => ({
             searchEngine: 'google',
             setSearchEngine: (engine: string) => set({ searchEngine: engine }),
-            openInNewTab: false,
+            openInNewTab: true,
             setOpenInNewTab: (openInNewTab: boolean) => set({ openInNewTab }),
+            searchHistoryActive: true,
+            setSearchHistoryActive: (searchHistoryActive: boolean) => set({ searchHistoryActive }),
         }),
         {
             name: 'settings-storage',

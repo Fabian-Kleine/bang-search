@@ -16,6 +16,8 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
+import { Button } from "./ui/button";
+
 import { Switch } from "./ui/switch";
 
 import Image from "next/image";
@@ -34,9 +36,17 @@ export default function SettingsDialog({ children }: SettingsDialogProps) {
         setSearchEngine,
         openInNewTab,
         setOpenInNewTab,
+        searchHistoryActive,
+        setSearchHistoryActive,
     } = useSettingsStore();
 
     const { theme, setTheme } = useTheme();
+
+    const handleClearData = () => {
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.reload();
+    }
 
     return (
         <Dialog>
@@ -66,6 +76,18 @@ export default function SettingsDialog({ children }: SettingsDialogProps) {
                                 <SelectItem value="system">System</SelectItem>
                             </SelectContent>
                         </Select>
+                    </div>
+                    <div className="w-full h-4" />
+                    <div className="flex flex-wrap sm:flex-nowrap items-center justify-between cursor-default">
+                        <div className="flex flex-col mr-[5%] min-w-[65%] gap-1.5">
+                            <h3>Clear Data</h3>
+                            <p className="text-sm text-muted-foreground">
+                                Clears all the data stored in your browser, including search history and settings.
+                            </p>
+                        </div>
+                        <Button variant="secondary" className="mt-2 sm:mt-0 cursor-pointer" onClick={handleClearData}>
+                            Clear Data
+                        </Button>
                     </div>
                 </div>
                 <div className="pt-12">
@@ -110,6 +132,16 @@ export default function SettingsDialog({ children }: SettingsDialogProps) {
                             </p>
                         </div>
                         <Switch checked={openInNewTab} onCheckedChange={setOpenInNewTab} className="scale-[120%]" />
+                    </div>
+                    <div className="w-full h-4" />
+                    <div className="flex flex-wrap sm:flex-nowrap items-center justify-between cursor-default">
+                        <div className="flex flex-col mr-[5%] min-w-[65%] gap-1.5">
+                            <h3>Search History</h3>
+                            <p className="text-sm text-muted-foreground">
+                                Save the search history to your device.
+                            </p>
+                        </div>
+                        <Switch checked={searchHistoryActive} onCheckedChange={setSearchHistoryActive} className="scale-[120%]" />
                     </div>
                 </div>
             </DialogContent>

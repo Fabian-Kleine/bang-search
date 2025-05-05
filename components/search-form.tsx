@@ -13,7 +13,7 @@ interface SearchFormProps {
 export default function SearchForm({ className, children }: SearchFormProps) {
     const [value, setValue] = useState<string>("");
     const { addSearch } = useSearchHistoryStore();
-    const { searchEngine, openInNewTab } = useSettingsStore();
+    const { searchEngine, openInNewTab, searchHistoryActive } = useSettingsStore();
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setValue(event.target.value);
@@ -25,7 +25,7 @@ export default function SearchForm({ className, children }: SearchFormProps) {
         const originalQuery = value.trim();
         if (!originalQuery) return;
 
-        addSearch(originalQuery);
+        if (searchHistoryActive) addSearch(originalQuery);
 
         let url: string | null = null;
 
