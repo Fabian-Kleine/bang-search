@@ -397,7 +397,8 @@ export function getBang(query: string, customBangs: Bang[]): { bang: Bang | null
     return { bang: foundBang, searchTerm };
 }
 
-export function getBangUrl(query: string, customBangs: Bang[]): string | null {
+export function getBangUrl(query: string, customBangs?: Bang[]): string | null {
+    if (!customBangs) customBangs = [];
     const { bang, searchTerm } = getBang(query, customBangs);
 
     if (!bang) {
