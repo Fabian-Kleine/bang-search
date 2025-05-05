@@ -24,7 +24,7 @@ export default function BangsPage() {
             <h1 className="tracking-tighter text-3xl sm:text-4xl md:text-5xl lg:text-6xl/none font-bold">!Bangs</h1>
             <div className="flex flex-col max-w-2xl mt-10">
                 <p className="mb-4">
-                    Bangs are shortcuts that quickly take you to search results on other sites. For example, when you know you want to search on another site like Wikipedia or Amazon, our bangs get you there fastest. A search for <code className="relative rounded bg-muted px-[0.3rem] py-[0.1rem] font-mono text-sm mx-1">!w filter bubble</code> will take you directly to Wikipedia.
+                    Bangs are shortcuts that quickly take you to search results on other sites. For example, when you know you want to search on another site like Wikipedia or Amazon, our bangs get you there fastest. A search for <code className="relative rounded bg-muted px-[0.3rem] py-[0.1rem] font-mono text-sm mx-1 -z-10">!w filter bubble</code> will take you directly to Wikipedia.
                 </p>
                 <p>
                     Remember, though, because your search is actually taking place on that other site, you are subject to that site’s policies, including its data collection practices.
