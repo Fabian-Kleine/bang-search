@@ -138,7 +138,7 @@ export default function Home() {
           <Download size={72} />
           <h2 className="tracking-tight text-4xl sm:text-5xl md:text-6xl lg:text-7xl/none font-bold mb-8">Installation</h2>
           <p className="mb-4 text-xl text-center leading-8">
-            If you want to use <b>Bang Search</b>&apos;s features like !bangs in your own browser you can either set this page as your browsers homepage or add the following URL as a custom search engine to your browser.
+            If you want to use <b>Bang Search</b>&apos;s features like !bangs in your own browser you can either set this page as your browsers <a className="text-muted-foreground underline hover:text-muted-foreground/75" href="https://chromewebstore.google.com/detail/custom-new-tab-url/mmjbdbjnoablegbkcklggeknkfcjkjia" target="_blank">new Tab page</a> or add the following URL as a custom search engine to your browser.
             <br />This enables <Link className="text-muted-foreground underline hover:text-muted-foreground/75" href="/bangs">all of our bangs</Link>.
           </p>
           <div className="flex items-center gap-2 w-full max-w-md">
