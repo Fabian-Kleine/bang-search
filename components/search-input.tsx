@@ -56,7 +56,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
             try {
                 const result = evaluate(expression);
                 setCalculation(result);
-            } catch (error) {
+            } catch {
                 setCalculation("Syntax Error");
             }
             setIsCalculation(true);
@@ -308,7 +308,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
             </div>
 
             {isHistoryVisible && (
-                <div className="absolute box-content top-full left-0 -ml-[1px] w-full bg-accent border border-t-0 border-input rounded-b-md z-10 flex flex-col justif-center">
+                <div className="absolute box-content top-full left-0 -ml-[0.5px] w-full bg-accent border border-t-0 border-input rounded-b-md z-10 flex flex-col justif-center">
                     <div className="px-4 my-1">
                         <Separator decorative />
                     </div>
@@ -368,7 +368,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
             {isBangSuggestVisible && (
                 <div
                     ref={bangSuggestContainerRef}
-                    className="absolute box-content top-full left-0 -ml-[1px] w-full bg-accent border border-t-0 border-input rounded-b-md z-10 flex flex-col justif-center overflow-hidden"
+                    className="absolute box-content top-full left-0 -ml-[0.5px] w-full bg-accent border border-t-0 border-input rounded-b-md z-10 flex flex-col justif-center overflow-hidden"
                 >
                     <div className="px-4 my-1">
                         <Separator decorative />
@@ -411,7 +411,7 @@ export default function SearchInput({ className, value, onChange, ...props }: Se
             )}
 
             {isCalculationVisible && (
-                <div className="absolute box-content top-full left-0 -ml-[1px] w-full bg-accent border border-t-0 border-input rounded-b-md z-10 flex flex-col justif-center">
+                <div className="absolute box-content top-full left-0 -ml-[0.5px] w-full bg-accent border border-t-0 border-input rounded-b-md z-10 flex flex-col justif-center">
                     <div className="px-4 my-1">
                         <Separator decorative />
                     </div>

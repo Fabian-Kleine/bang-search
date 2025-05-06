@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { ArrowRight, Settings, Sparkles } from "lucide-react";
 import { bangs } from "@/lib/bangs";
 import IconInput from "@/components/ui/icon-input";
 import { Input } from "@/components/ui/input";
@@ -39,14 +39,21 @@ export default function BangsPage() {
                 </h1>
                 <RetroGrid />
             </div>
-            <div className="flex flex-wrap md:flex-nowrap justify-center items-center gap-8 my-16">
-                <img src={resolvedTheme === "dark" ? "/bangs.png" : "/bangs_light.png"} alt="Bangs" width={400} />
+            <div className="flex flex-col md:flex-row justify-center items-center gap-8 my-16">
+                <img className="shadow-xl" src={resolvedTheme === "dark" ? "/bangs.png" : "/bangs_light.png"} alt="Bangs" width={400} />
                 <div className="flex flex-col max-w-2xl mt-10 px-4 sm:px-6">
                     <p className="mb-4">
                         Bangs are shortcuts that quickly take you to search results on other sites. For example, when you know you want to search on another site like Wikipedia or Amazon, our bangs get you there fastest. A search for <code className="relative rounded bg-muted px-[0.3rem] py-[0.1rem] font-mono text-sm mx-1 -z-10">!w filter bubble</code> will take you directly to Wikipedia.
                     </p>
-                    <p>
+                    <p className="mb-4">
                         Remember, though, because your search is actually taking place on that other site, you are subject to that site’s policies, including its data collection practices.
+                    </p>
+                    <p>
+                        You can also add your own custom bangs in the settings menu.
+                        <span className="flex items-center gap-1 mt-2">
+                            <ArrowRight size={20} />
+                            <Settings size={20} />
+                        </span>
                     </p>
                 </div>
             </div>
@@ -63,7 +70,7 @@ export default function BangsPage() {
                     />
                 </IconInput>
                 {searchValue && (
-                    <p className="text-lg font-semibold">"{searchValue}" results</p>
+                    <p className="text-lg font-semibold">&quot;{searchValue}&quot; results</p>
                 )}
                 <div className="flex flex-wrap justify-center max-w-2xl mt-4 w-full">
                     <ul className="w-full max-h-48 overflow-y-auto">

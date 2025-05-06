@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
 
     let q = searchParams.get("q") || searchParams.get("query");
-    let searchEngine = searchParams.get("se") || searchParams.get("searchEngine") || "google";
+    const searchEngine = searchParams.get("se") || searchParams.get("searchEngine") || "google";
 
     if (!q) {
         q = "search";
