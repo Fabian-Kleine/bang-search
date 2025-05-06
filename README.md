@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bang Search
 
-## Getting Started
+![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FFabian-Kleine%2Fbang-search%2Frefs%2Fheads%2Fmain%2Fpackage.json&query=dependencies.next&logo=next.js&logoColor=next.js&label=Next.js)
+[![Repo Language Count](https://img.shields.io/github/languages/count/Fabian-Kleine/bang-search)](https://github.com/Fabian-Kleine/bang-search)
+[![Repo Top Language](https://img.shields.io/github/languages/top/Fabian-Kleine/bang-search)](https://github.com/Fabian-Kleine/bang-search)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![GitHub last commit](https://img.shields.io/github/last-commit/Fabian-Kleine/bang-search)
 
-First, run the development server:
+## ✨ About
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+A "search engine" supporting !bangs and more
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ⭐ Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **!Bangs**: Shortcuts to search different websites
+- **Calculations**: Use `=` to perform calculations
+- **Search History**: Save History locally
+- **Local-first**: All settings are saved locally
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Tech Stack
 
-## Learn More
+*   **[TypeScript](https://www.typescriptlang.org/)**: Superset of JavaScript adding static types.
+*   **[Tailwind CSS](https:tailwindcss.com)**: Styling the application.
+*   **[Next.js](https://nextjs.org)**: The React Framework
+*   **[Shadcn UI](https://ui.shadcn.com)**: A modern component platform
 
-To learn more about Next.js, take a look at the following resources:
+## 🏁 Getting Started
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To run this project locally:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/Fabian-Kleine/bang-search.git
+    cd bang-search
+    ```
 
-## Deploy on Vercel
+2.  **Install dependencies:**
+    ```bash
+    # Using npm
+    npm install
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    # Or using yarn
+    # yarn install
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3.  **Run the development server:**
+    ```bash
+    # Using npm
+    npm run dev
+
+    # Or using yarn
+    # yarn dev
+    ```
+
+4.  Open [http://localhost:3000](http://localhost:3000) (or the specified port) in your browser to see the result.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
