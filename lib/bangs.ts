@@ -32,6 +32,12 @@ export const bangs: Bang[] = [
         img: "/logos/yahoo.png",
     },
     {
+        name: "Ecosia",
+        bang: "!e",
+        url: "https://www.ecosia.org/search?q=%s",
+        img: "/logos/ecosia.png",
+    },
+    {
         name: "Wikipedia",
         bang: "!w",
         url: "https://en.wikipedia.org/w/index.php?search=%s",

@@ -43,6 +43,8 @@ export default function SearchForm({ className, children }: SearchFormProps) {
                 url = `https://${searchEngine}.com/search?q=${encodeURIComponent(originalQuery)}`;
                 if (searchEngine === "yahoo") {
                     url = `https://search.yahoo.com/search?p=${encodeURIComponent(originalQuery)}`;
+                } else if (searchEngine === "ecosia") {
+                    url = `https://www.ecosia.org/search?q=${encodeURIComponent(originalQuery)}`;
                 }
             }
         }

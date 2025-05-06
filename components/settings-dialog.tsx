@@ -226,6 +226,10 @@ export default function SettingsDialog({ children }: SettingsDialogProps) {
                                             <Image src="/logos/yahoo.png" alt="Yahoo Logo" width={15} height={15} />
                                             Yahoo
                                         </SelectItem>
+                                        <SelectItem value="ecosia">
+                                            <Image src="/logos/ecosia.png" alt="Ecosia Logo" width={15} height={15} />
+                                            Ecosia
+                                        </SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>

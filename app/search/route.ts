@@ -24,6 +24,8 @@ export async function GET(request: NextRequest) {
             url = `https://${searchEngine}.com/search?q=${encodeURIComponent(q)}`;
             if (searchEngine === "yahoo") {
                 url = `https://search.yahoo.com/search?p=${encodeURIComponent(q)}`;
+            } else if (searchEngine === "ecosia") {
+                url = `https://www.ecosia.org/search?q=${encodeURIComponent(q)}`;
             }
         }
     }
