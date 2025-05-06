@@ -85,7 +85,11 @@ export default function SettingsDialog({ children }: SettingsDialogProps) {
     const handleAddCustomBang = () => {
         const bangSchema = z.object({
             name: z.string().min(1, "Name is required"),
-            url: z.string().url("Invalid URL").min(1, "URL is required"),
+            url: z.string().url("Invalid URL").min(1, "URL is required")
+            .refine((val) => {
+                const count = (val.match(/%s/g) || []).length;
+                return count === 1;
+            }, "URL must contain exactly one %s placeholder"),
             shortcut: z.string().min(1, "Shortcut is required").refine((val) => !val.includes("!"), {
             message: "Shortcut should not include '!' anywhere",
             }),
@@ -102,12 +106,6 @@ export default function SettingsDialog({ children }: SettingsDialogProps) {
             if (shortcutExists) {
                 setNewBangShortcutError(true);
                 setNewBangErrorMsg("Shortcut already exists");
-                return;
-            }
-
-            if (!result.data.url.includes("{{query}}")) {
-                setNewBangURLError(true);
-                setNewBangErrorMsg("URL must contain {{query}} placeholder");
                 return;
             }
 
@@ -280,11 +278,11 @@ export default function SettingsDialog({ children }: SettingsDialogProps) {
                                                     <span className="sr-only">Info</span>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-[200px]">
-                                                    <p className="text-sm">Place <code className="relative rounded bg-muted px-[0.3rem] py-[0.1rem] font-mono text-sm mx-1">{"{{query}}"}</code> where the search query goes</p>
+                                                    <p className="text-sm">Place <code className="relative rounded bg-muted px-[0.3rem] py-[0.1rem] font-mono text-sm mx-1">%s</code> where the search query goes</p>
                                                 </PopoverContent>
                                             </Popover>
                                         </Label>
-                                        <Input id="bangURL" placeholder="https://google.com/search?q={{query}}" value={newBangURL} onChange={(e) => setNewBangURL(e.target.value)} className={cn("w-full", newBangURLError && "border-destructive")} />
+                                        <Input id="bangURL" placeholder="https://google.com/search?q=%s" value={newBangURL} onChange={(e) => setNewBangURL(e.target.value)} className={cn("w-full", newBangURLError && "border-destructive")} />
                                     </div>
                                     <div className="grid w-full max-w-sm items-center gap-1.5">
                                         <Label htmlFor="bangShortcut">Bang Shortcut</Label>
@@ -322,9 +320,9 @@ export default function SettingsDialog({ children }: SettingsDialogProps) {
                                 <TableBody>
                                     {customBangs.map((bang, index) => (
                                         <TableRow key={bang.bang}>
-                                            <TableCell>{bang.name}</TableCell>
-                                            <TableCell>{bang.url}</TableCell>
-                                            <TableCell>{bang.bang}</TableCell>
+                                            <TableCell className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap">{bang.name}</TableCell>
+                                            <TableCell className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap">{bang.url}</TableCell>
+                                            <TableCell className="max-w-0 overflow-hidden text-ellipsis whitespace-nowrap">{bang.bang}</TableCell>
                                             <TableCell>
                                                 <Label htmlFor={`bang-${index}`} className="sr-only">Enabled</Label>
                                                 <Checkbox id={`bang-${index}`} checked={!bang.disabled} onCheckedChange={(val: boolean) => setBangDisabled(index, !val)} className="cursor-pointer" />
