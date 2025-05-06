@@ -90,7 +90,7 @@ export default function Home() {
             </ul>
           </div>
           <div className="relative w-[400px] h-[400px]">
-            <div className="absolute -translate-x-1/4 -translate-y-1/2 lg:translate-y-0 w-[600px] h-[600px] bg-linear-to-tr from-[#ffd319] via-[#ff2975] to-[#8c1eff] rounded-full -z-10 blur-[100px] opacity-60 md:opacity-100 md:dark:opacity-85" />
+            <div className="absolute -translate-x-1/4 lg:translate-x-0 -translate-y-1/2 lg:translate-y-0 w-[600px] h-[600px] bg-linear-to-tr from-[#ffd319] via-[#ff2975] to-[#8c1eff] rounded-full -z-10 blur-[100px] opacity-60 md:opacity-100 md:dark:opacity-85" />
             <img className="absolute -right-[125%] shadow-xl min-w-[800px]" src={resolvedTheme === "dark" ? "/bang-search-mockup.png" : "/bang-search-mockup_light.png"} alt="Bang Search Mockup" />
           </div>
         </div>
