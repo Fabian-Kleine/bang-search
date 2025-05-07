@@ -54,6 +54,15 @@ To run this project locally:
 
 4.  Open [http://localhost:3000](http://localhost:3000) (or the specified port) in your browser to see the result.
 
+5. If you make changes to the client search script `/lib/search.ts` dont forget to rebuild it:
+    ```bash
+    # Using npm
+    npm run build:search
+
+    # Or using yarn
+    # yarn build:search
+    ```
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
