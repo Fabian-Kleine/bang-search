@@ -18,6 +18,7 @@ export function GET() {
     const headers = new Headers({
         "Content-Type": "text/html",
         "Cache-Control": "public, max-age=86400",
+        "Vary": "Accept-Encoding",
     });
 
     return new NextResponse(html, {
