@@ -12,10 +12,12 @@ A "search engine" supporting !bangs and more
 
 ## ⭐ Features
 
-- **!Bangs**: Shortcuts to search different websites
-- **Calculations**: Use `=` to perform calculations
-- **Search History**: Save History locally
-- **Local-first**: All settings are saved locally
+- [x] **!Bangs**: Shortcuts to search different websites
+- [x] **Calculations**: Use `=` to perform calculations
+- [x] **Search History**: Save History locally
+- [x] **Local-first**: All settings are saved locally
+- [ ] **Sync Changes**: Add MongoDB to transfer settings using a code (only temporary storage)
+- [ ] **Bookmarks**: Add bookmarked links to the start page or navbar
 
 ## 🚀 Tech Stack
 
