@@ -3,11 +3,12 @@
 import { Button } from "@/components/ui/button";
 import SearchInput from "@/components/search-input";
 import SearchForm from "@/components/search-form";
-import { ArrowDown, ArrowRight, Download, LockKeyhole, Search, Settings, Sparkles, Clipboard, ClipboardCheck } from "lucide-react";
+import { ArrowDown, Download, LockKeyhole, Search, Settings, Sparkles, Clipboard, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
+import SettingsDialog from "@/components/settings-dialog";
 
 export default function Home() {
   const { resolvedTheme } = useTheme();
@@ -112,13 +113,12 @@ export default function Home() {
             <p className="mb-4 text-xl">
               Choose from a variety of search engines like Google, Bing, DuckDuckGo, and more.
             </p>
-            <p>
-              Find out more in the settings menu
-              <span className="flex items-center gap-1 mt-2">
-                <ArrowRight size={20} />
+            <SettingsDialog>
+              <span className="flex items-center gap-2 text-sky-600 font-bold hover:underline mt-4 w-fit cursor-pointer">
                 <Settings size={20} />
+                Settings
               </span>
-            </p>
+            </SettingsDialog>
           </div>
           <img src={resolvedTheme === "dark" ? "/search-engine-dropdown.png" : "/search-engine-dropdown_light.png"} alt="Search Engine" width={300} />
         </div>
@@ -134,12 +134,12 @@ export default function Home() {
             *Bang Search redirects to other websites which may track you.<br /> Please check their privacy policies.
           </p>
         </div>
-        <div className="flex flex-col justify-center items-center gap-4 py-24 max-w-2xl">
+        <div className="relatie flex flex-col justify-center items-center gap-4 py-24 max-w-2xl overflow-hidden">
           <Download size={72} />
           <h2 className="tracking-tight text-4xl sm:text-5xl md:text-6xl lg:text-7xl/none font-bold mb-8">Installation</h2>
           <p className="mb-4 text-xl text-center leading-8">
             If you want to use <b>Bang Search</b>&apos;s features like !bangs in your own browser you can either set this page as your browsers <a className="text-muted-foreground underline hover:text-muted-foreground/75" href="https://chromewebstore.google.com/detail/custom-new-tab-url/mmjbdbjnoablegbkcklggeknkfcjkjia" target="_blank">new Tab page</a> or add the following URL as a custom search engine to your browser.
-            <br />This enables <Link className="text-muted-foreground underline hover:text-muted-foreground/75" href="/bangs">all of our bangs</Link>.
+            <br />This enables <Link className="text-muted-foreground underline hover:text-muted-foreground/75" href="/bangs">all of our bangs</Link> and custom bangs.
           </p>
           <div className="flex items-center gap-2 w-full max-w-md">
             <Input readOnly value="https://search.fabian-kleine.dev/search?q=%s" />
@@ -159,6 +159,7 @@ export default function Home() {
             You can add <code className="relative rounded bg-muted px-[0.3rem] py-[0.1rem] font-mono text-sm mx-1">&se=</code> to the URL to define the default search engine.
             <br /> Possible values are: google, bing, duckduckgo, yahoo and ecosia.
           </p>
+          <div className="absolute rotate-90 w-[600px] h-[600px] bg-linear-to-tr from-[#ffd319] via-[#ff2975] to-[#8c1eff] rounded-full -z-10 blur-[200px] opacity-60 md:opacity-100 md:dark:opacity-85" />
         </div>
       </section>
     </>

@@ -52,9 +52,10 @@ import { Checkbox } from "./ui/checkbox";
 
 interface SettingsDialogProps {
     children: React.ReactNode;
+    defaultTab?: "settings" | "bangs";
 }
 
-export default function SettingsDialog({ children }: SettingsDialogProps) {
+export default function SettingsDialog({ children, defaultTab = "settings" }: SettingsDialogProps) {
     const {
         searchEngine,
         setSearchEngine,
@@ -152,7 +153,7 @@ export default function SettingsDialog({ children }: SettingsDialogProps) {
                         Bang Search Settings
                     </DialogDescription>
                 </DialogHeader>
-                <Tabs defaultValue="settings" className="flex flex-col sm:flex-row gap-6">
+                <Tabs defaultValue={defaultTab} className="flex flex-col sm:flex-row gap-6">
                     <TabsList className="flex flex-row mx-auto sm:mx-0 sm:flex-col sm:gap-2 sm:h-auto sm:w-2xs overflow-x-auto sm:overflow-x-visible bg-transparent sm:bg-muted p-1 sm:py-4 sm:justify-start rounded-none">
                         <TabsTrigger value="settings" className="w-full justify-start sm:max-h-fit sm:hover:bg-background sm:dark:hover:bg-input/30 sm:py-1 sm:px-4 cursor-pointer sm:rounded-sm sm:dark:shadow-none sm:!border-none">
                             <Settings2 />

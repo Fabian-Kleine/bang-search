@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Settings, Sparkles } from "lucide-react";
+import { Settings, Sparkles } from "lucide-react";
 import { bangs } from "@/lib/bangs";
 import IconInput from "@/components/ui/icon-input";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import Link from "next/link";
 import ThemeImage from "@/components/ui/theme-image";
 import { RetroGrid } from "@/components/magicui/retro-grid";
 import { useTheme } from "next-themes";
+import SettingsDialog from "@/components/settings-dialog";
 
 export default function BangsPage() {
     const [filteredBangs, setFilteredBangs] = useState(bangs);
@@ -50,16 +51,25 @@ export default function BangsPage() {
                     </p>
                     <p>
                         You can also add your own custom bangs in the settings menu.
-                        <span className="flex items-center gap-1 mt-2">
-                            <ArrowRight size={20} />
-                            <Settings size={20} />
-                        </span>
+                        <SettingsDialog defaultTab="bangs">
+                            <span className="flex items-center gap-2 text-sky-600 font-bold hover:underline mt-4 w-fit cursor-pointer">
+                                <Settings size={20} />
+                                Settings
+                            </span>
+                        </SettingsDialog>
                     </p>
                 </div>
             </div>
             <div className="flex flex-col items-center justify-center w-full max-w-xl gap-2">
                 <h2 className="mt-10 text-2xl font-bold">{bangs.length} Available Bangs</h2>
-                <p className="mb-4 text-lg">Click on a bang to try it out.</p>
+                <p className="mb-4 text-lg">
+                    Click on a bang to try it out. See one missing?
+                    <SettingsDialog defaultTab="bangs">
+                        <span className="text-sky-600 hover:underline w-fit cursor-pointer ml-1">
+                            Add it yourself!
+                        </span>
+                    </SettingsDialog>
+                </p>
                 <IconInput icon="Search" className="w-full">
                     <Input
                         type="text"
