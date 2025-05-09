@@ -41,7 +41,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { CircleHelp, Pencil, Settings2, Sparkles, Trash2 } from "lucide-react";
+import { CircleHelp, Clipboard, ClipboardCheck, LoaderCircle, Pencil, Settings2, ShieldUser, Sparkles, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
@@ -63,6 +63,9 @@ export default function SettingsDialog({ children, defaultTab = "settings" }: Se
         setOpenInNewTab,
         searchHistoryActive,
         setSearchHistoryActive,
+        sync,
+        setSyncId,
+        setSyncCreatedAt,
     } = useSettingsStore();
 
     const { theme, setTheme } = useTheme();
@@ -72,6 +75,11 @@ export default function SettingsDialog({ children, defaultTab = "settings" }: Se
         sessionStorage.clear();
         window.location.reload();
     }
+
+    const [copiedSyncId, setCopiedSyncId] = useState(false);
+    const [syncLoading, setSyncLoading] = useState(false);
+    const [syncError, setSyncError] = useState("");
+    const [syncSuccess, setSyncSuccess] = useState(false);
 
     const [addCustomBangFormActive, setAddCustomBangFormActive] = useState(false);
     const [newBangName, setNewBangName] = useState("");
@@ -87,12 +95,12 @@ export default function SettingsDialog({ children, defaultTab = "settings" }: Se
         const bangSchema = z.object({
             name: z.string().min(1, "Name is required"),
             url: z.string().url("Invalid URL").min(1, "URL is required")
-            .refine((val) => {
-                const count = (val.match(/%s/g) || []).length;
-                return count === 1;
-            }, "URL must contain exactly one %s placeholder"),
+                .refine((val) => {
+                    const count = (val.match(/%s/g) || []).length;
+                    return count === 1;
+                }, "URL must contain exactly one %s placeholder"),
             shortcut: z.string().min(1, "Shortcut is required").refine((val) => !val.includes("!"), {
-            message: "Shortcut should not include '!' anywhere",
+                message: "Shortcut should not include '!' anywhere",
             }),
         });
 
@@ -141,6 +149,108 @@ export default function SettingsDialog({ children, defaultTab = "settings" }: Se
         removeBang(index);
     }
 
+    const handleCreateSync = async () => {
+        const loadingTimeout = setTimeout(() => {
+            setSyncLoading(true);
+        }, 200);
+
+        setSyncError("");
+        setSyncSuccess(false);
+
+        const oldId = sync.id;
+
+        const id = Math.random().toString(36).substring(2, 8);
+        const createdAt = Date.now();
+
+        const response = await fetch("/sync", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                id,
+                oldId,
+                settings: {
+                    searchEngine,
+                    openInNewTab,
+                    searchHistoryActive,
+                    theme,
+                },
+                bangs: customBangs,
+            }),
+        });
+
+        if (!response.ok) {
+            setSyncError("Failed to sync data. Please try again.");
+            clearTimeout(loadingTimeout);
+            setSyncLoading(false);
+            return;
+        }
+
+        setSyncId(id);
+        setSyncCreatedAt(createdAt);
+        setCopiedSyncId(false);
+
+        clearTimeout(loadingTimeout);
+        setSyncLoading(false);
+    }
+
+    const handleSyncIdInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+
+        setSyncError("");
+        setSyncSuccess(false);
+
+        if (value.length < 6) {
+            return;
+        }
+
+        if (value.length > 6) {
+            setSyncError("Sync ID must be 6 characters long.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/sync?id=${value}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                setSyncError("Invalid Sync ID. Please try again.");
+                return;
+            }
+
+            const data = await response.json();
+
+            setSearchEngine(data.settings.searchEngine);
+            setOpenInNewTab(data.settings.openInNewTab);
+            setSearchHistoryActive(data.settings.searchHistoryActive);
+            setTheme(data.settings.theme);
+
+            data.bangs.forEach((bang: any) => {
+                const shortcutExists = customBangs.some(b => b.bang === bang.bang) || bangs.some(b => b.bang === bang.bang);
+                if (shortcutExists) {
+                    setSyncError("Some shortcuts couldn't be imported due to conflicts.");
+                    return;
+                }
+                addBang({
+                    name: bang.name,
+                    url: bang.url,
+                    bang: bang.bang,
+                });
+            });
+
+            e.target.value = "";
+            setSyncSuccess(true);
+        } catch (err) {
+            console.error(err);
+            setSyncError("Failed to import data. Please try again.");
+        }
+    }
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -155,13 +265,17 @@ export default function SettingsDialog({ children, defaultTab = "settings" }: Se
                 </DialogHeader>
                 <Tabs defaultValue={defaultTab} className="flex flex-col sm:flex-row gap-6">
                     <TabsList className="flex flex-row mx-auto sm:mx-0 sm:flex-col sm:gap-2 sm:h-auto sm:w-2xs overflow-x-auto sm:overflow-x-visible bg-transparent sm:bg-muted p-1 sm:py-4 sm:justify-start rounded-none">
-                        <TabsTrigger value="settings" className="w-full justify-start sm:max-h-fit sm:hover:bg-background sm:dark:hover:bg-input/30 sm:py-1 sm:px-4 cursor-pointer sm:rounded-sm sm:dark:shadow-none sm:!border-none">
-                            <Settings2 />
+                        <TabsTrigger value="settings" className="w-full justify-start sm:max-h-fit sm:hover:bg-background sm:dark:hover:bg-input/30 sm:py-1 sm:px-4 cursor-pointer sm:rounded-sm sm:dark:shadow-none sm:!border-none font-semibold data-[state=active]:font-bold sm:text-sm">
+                            <Settings2 className="size-5" />
                             Settings
                         </TabsTrigger>
-                        <TabsTrigger value="bangs" className="w-full justify-start sm:max-h-fit sm:hover:bg-background sm:dark:hover:bg-input/30 sm:py-1 sm:px-4 cursor-pointer sm:rounded-sm sm:dark:shadow-none sm:!border-none">
-                            <Sparkles />
+                        <TabsTrigger value="bangs" className="w-full justify-start sm:max-h-fit sm:hover:bg-background sm:dark:hover:bg-input/30 sm:py-1 sm:px-4 cursor-pointer sm:rounded-sm sm:dark:shadow-none sm:!border-none font-semibold data-[state=active]:font-bold sm:text-sm">
+                            <Sparkles className="size-5" />
                             Bangs
+                        </TabsTrigger>
+                        <TabsTrigger value="data" className="w-full justify-start sm:max-h-fit sm:hover:bg-background sm:dark:hover:bg-input/30 sm:py-1 sm:px-4 cursor-pointer sm:rounded-sm sm:dark:shadow-none sm:!border-none font-semibold data-[state=active]:font-bold sm:text-sm">
+                            <ShieldUser className="size-5" />
+                            Data
                         </TabsTrigger>
                     </TabsList>
                     <div className="flex-1 py-6 px-8">
@@ -184,18 +298,6 @@ export default function SettingsDialog({ children, defaultTab = "settings" }: Se
                                         <SelectItem value="system">System</SelectItem>
                                     </SelectContent>
                                 </Select>
-                            </div>
-                            <div className="w-full h-4" />
-                            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between cursor-default">
-                                <div className="flex flex-col mr-[5%] min-w-[65%] gap-1.5">
-                                    <h3 className="text-sm">Clear Data</h3>
-                                    <p className="text-muted-foreground text-[0.813rem] ">
-                                        Clears all the data stored in your browser, including search history and settings.
-                                    </p>
-                                </div>
-                                <Button variant="secondary" className="mt-2 sm:mt-0 cursor-pointer" onClick={handleClearData}>
-                                    Clear Data
-                                </Button>
                             </div>
                             <div className="h-10 w-full" />
                             <h2 className="border-b mb-4 pb-3 font-semibold text-lg">Search</h2>
@@ -346,6 +448,75 @@ export default function SettingsDialog({ children, defaultTab = "settings" }: Se
                                     ))}
                                 </TableBody>
                             </Table>
+                        </TabsContent>
+                        <TabsContent value="data">
+                            <h2 className="border-b mb-4 pb-3 font-semibold text-lg">Local Data</h2>
+                            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between cursor-default">
+                                <div className="flex flex-col mr-[5%] min-w-[65%] gap-1.5">
+                                    <h3 className="text-sm">Clear Data</h3>
+                                    <p className="text-muted-foreground text-[0.813rem] ">
+                                        Clears all the data stored in your browser, including search history and settings.
+                                    </p>
+                                </div>
+                                <Button disabled={syncLoading} variant="secondary" className="mt-2 sm:mt-0 cursor-pointer" onClick={handleClearData}>
+                                    Clear Data
+                                </Button>
+                            </div>
+                            <div className="h-10 w-full" />
+                            <h2 className="border-b mb-4 pb-3 font-semibold text-lg">Sync Data</h2>
+                            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between cursor-default">
+                                <div className="flex flex-col mr-[5%] min-w-[65%] gap-1.5">
+                                    <h3 className="text-sm">Sync Data</h3>
+                                    <p className="text-muted-foreground text-[0.813rem] ">
+                                        Stores all your settings in the cloud temporarily so you can import them on another device.
+                                    </p>
+                                </div>
+                                <Button disabled={syncLoading} variant="secondary" className="mt-2 sm:mt-0 cursor-pointer" onClick={handleCreateSync}>
+                                    {syncLoading && <LoaderCircle className="animate-spin" />}
+                                    {syncLoading ? "Syncing..." : "Sync Data"}
+                                </Button>
+                            </div>
+                            {sync.id && sync.createdAt && (Date.now() - sync.createdAt < 3600000) && (
+                                <>
+                                    <div className="h-4 w-full" />
+                                    <div className="flex flex-wrap sm:flex-nowrap items-center justify-between cursor-default">
+                                        <div className="flex flex-col mr-[5%] min-w-[65%] gap-1.5">
+                                            <h3 className="text-sm">Sync ID</h3>
+                                            <p className="text-muted-foreground text-[0.813rem] ">
+                                                Your Sync ID is: <span className="text-primary font-bold">{sync.id}</span>
+                                                <br />
+                                                This ID is valid for 1 hour. After that, you will need to create a new one.
+                                            </p>
+                                        </div>
+                                        <Button disabled={syncLoading} variant="secondary" className="mt-2 sm:mt-0 cursor-pointer" onClick={() => { navigator.clipboard.writeText(sync.id); setCopiedSyncId(true); }}>
+                                            {copiedSyncId ? <ClipboardCheck /> : <Clipboard />}
+                                            {copiedSyncId ? "Copied Sync ID" : "Copy Sync ID"}
+                                        </Button>
+                                    </div>
+                                </>
+                            )}
+                            <div className="h-4 w-full" />
+                            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between cursor-default">
+                                <div className="flex flex-col mr-[5%] min-w-[65%] gap-1.5">
+                                    <h3 className="text-sm">Import Data</h3>
+                                    <p className="text-muted-foreground text-[0.813rem] ">
+                                        Import your settings from another device using the Sync ID.
+                                    </p>
+                                </div>
+                                <Input onChange={handleSyncIdInput} disabled={syncLoading} placeholder="Sync ID" />
+                            </div>
+                            {syncError && (
+                                <>
+                                    <div className="h-4 w-full" />
+                                    <p className="text-sm text-destructive">{syncError}</p>
+                                </>
+                            )}
+                            {syncSuccess && (
+                                <>
+                                    <div className="h-4 w-full" />
+                                    <p className="text-sm text-green-500">Data imported successfully!</p>
+                                </>
+                            )}
                         </TabsContent>
                     </div>
                 </Tabs>

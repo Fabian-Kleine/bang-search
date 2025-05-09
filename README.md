@@ -16,8 +16,7 @@ A "search engine" supporting !bangs and more
 - [x] **Calculations**: Use `=` to perform calculations
 - [x] **Search History**: Save History locally
 - [x] **Local-first**: All settings are saved locally
-- [ ] **Sync Settings**: Add MongoDB to transfer settings using a code (only temporary storage)
-- [ ] **Bookmarks**: Add bookmarked links to the start page or navbar
+- [x] **Sync Settings**: Add MongoDB to transfer settings using a code (only temporary storage)
 
 ## 🚀 Tech Stack
 

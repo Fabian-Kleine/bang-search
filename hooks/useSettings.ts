@@ -8,6 +8,12 @@ interface SettingsState {
     setOpenInNewTab: (newTab: boolean) => void;
     searchHistoryActive: boolean;
     setSearchHistoryActive: (active: boolean) => void;
+    sync: {
+        id: string;
+        createdAt: number;
+    };
+    setSyncId: (id: string) => void;
+    setSyncCreatedAt: (createdAt: number) => void;
 }
 
 const useSettingsStore = create<SettingsState>()(
@@ -19,6 +25,12 @@ const useSettingsStore = create<SettingsState>()(
             setOpenInNewTab: (openInNewTab: boolean) => set({ openInNewTab }),
             searchHistoryActive: true,
             setSearchHistoryActive: (searchHistoryActive: boolean) => set({ searchHistoryActive }),
+            sync: {
+                id: '',
+                createdAt: 0,
+            },
+            setSyncId: (id: string) => set((state) => ({ sync: { ...state.sync, id } })),
+            setSyncCreatedAt: (createdAt: number) => set((state) => ({ sync: { ...state.sync, createdAt } })),
         }),
         {
             name: 'settings-storage',
