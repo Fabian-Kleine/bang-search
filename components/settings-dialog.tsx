@@ -47,7 +47,7 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
-import { bangs } from "@/lib/bangs";
+import { Bang, bangs } from "@/lib/bangs";
 import { Checkbox } from "./ui/checkbox";
 
 interface SettingsDialogProps {
@@ -230,7 +230,7 @@ export default function SettingsDialog({ children, defaultTab = "settings" }: Se
             setSearchHistoryActive(data.settings.searchHistoryActive);
             setTheme(data.settings.theme);
 
-            data.bangs.forEach((bang: any) => {
+            data.bangs.forEach((bang: Bang) => {
                 const shortcutExists = customBangs.some(b => b.bang === bang.bang) || bangs.some(b => b.bang === bang.bang);
                 if (shortcutExists) {
                     setSyncError("Some shortcuts couldn't be imported due to conflicts.");
