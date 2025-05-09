@@ -211,6 +211,7 @@ export default function SettingsDialog({ children, defaultTab = "settings" }: Se
         }
 
         try {
+            setSyncLoading(true);
             const response = await fetch(`/sync?id=${value}`, {
                 method: "GET",
                 headers: {
@@ -248,6 +249,8 @@ export default function SettingsDialog({ children, defaultTab = "settings" }: Se
         } catch (err) {
             console.error(err);
             setSyncError("Failed to import data. Please try again.");
+        } finally {
+            setSyncLoading(false);
         }
     }
 
