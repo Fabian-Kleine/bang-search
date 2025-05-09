@@ -6,8 +6,8 @@ import { getBangUrl } from "./bangs";
 
 const currentURL = new URL(window.location.href);
 
-const searchEngineLocal = JSON.parse(localStorage.getItem("settings-storage") as string).state.searchEngine;
-const customBangsLocal = JSON.parse(localStorage.getItem("bangs-storage") as string).state.bangs;
+const searchEngineLocal = JSON.parse(localStorage.getItem("settings-storage") as string)?.state?.searchEngine;
+const customBangsLocal = JSON.parse(localStorage.getItem("bangs-storage") as string)?.state?.bangs;
 
 const q = currentURL.searchParams.get("q") || currentURL.searchParams.get("query") || "search";
 const searchEngine = currentURL.searchParams.get("se") || currentURL.searchParams.get("searchEngine") || searchEngineLocal || "google";
