@@ -245,13 +245,13 @@ export const bangs: Bang[] = [
         name: "Amazon Prime Video",
         bang: "!apv",
         url: "https://www.amazon.com/gp/video/search?phrase=%s",
-        img: "https://cdn.simpleicons.org/prime/prime",
+        img: "https://static.cdnlogo.com/logos/a/58/amazon-prime-video.svg",
     },
     {
         name: "Amazon Prime Video (DE)",
         bang: "!apvde",
         url: "https://www.amazon.de/gp/video/search?phrase=%s",
-        img: "https://cdn.simpleicons.org/prime/prime",
+        img: "https://static.cdnlogo.com/logos/a/58/amazon-prime-video.svg",
     },
     {
         name: "Simple Icons",
